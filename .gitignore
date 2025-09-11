@@ -1,0 +1,9 @@
+# Dependências
+/node_modules
+
+# Arquivo de ambiente com senhas
+.env
+
+# Arquivos Modelos 
+Conectando ao servidor o DBServer.txt
+Token Usuario.txt
