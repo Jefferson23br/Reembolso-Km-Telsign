@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reembolso de Km</title>
+    <title id="page-title">Reembolso de Km</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
     
     <div id="main-container" class="container">
         <div id="login-area">
-            <h1>Reembolso de Km</h1>
+            <h1 id="login-title">Reembolso de Km</h1>
             <h2>Login</h2>
             <form id="loginForm">
                 <label for="email">E-mail</label>
@@ -27,31 +27,32 @@
 
         <div id="dashboard-area" style="display: none;">
             <header class="dashboard-header">
-                <h2>Painel Dashboard</h2>
+                <h2 id="dashboard-title">Painel Dashboard</h2>
                 <button id="logoutButton">Sair</button>
             </header>
             <div class="dashboard-body">
                 <nav class="dashboard-menu">
-                    <button data-view="view-home">Início</button>
+                    <button data-view="view-home" class="active">Início</button>
                     <button data-view="view-cadastrar-veiculo">Cadastrar Veículo</button>
                     <button data-view="view-listar-veiculo">Listar Veículos</button>
                     <button data-view="view-lancar-km">Lançar KM</button>
-                    <button data-view="view-lancar-combustivel">Lançar Combustível</button>
+                    <button data-view="view-listar-viagens">Listar Viagens</button>
+                    <button data-view="view-lancar-despesa">Lançamento de Despesa</button>
                     <button data-view="view-lancar-pagamento">Lançar Pagamento</button>
                     <button data-view="view-relatorios">Relatórios</button>
                 </nav>
                 <main id="dashboard-content" class="dashboard-content">
                     <div id="view-home" class="view">
                         <h3>Bem-vindo!</h3>
-                        <p>Selecione uma opção no menu ao lado para começar.</p>
+                        <p>Selecione uma opção no menu para começar.</p>
                     </div>
 
                     <div id="view-cadastrar-veiculo" class="view" style="display: none;">
                         <h3>Cadastrar Novo Veículo Alugado</h3>
                         <form id="veiculoForm">
-                            <label for="placa">Placa (ABC-1234)</label>
+                            <label for="placa">Placa</label>
                             <input type="text" id="placa" required>
-                            <label for="descricao">Descrição (Ex: Carro Uno)</label>
+                            <label for="descricao">Descrição</label>
                             <input type="text" id="descricao" required>
                             <label for="data_inicio_aluguel">Data de Início do Aluguel</label>
                             <input type="date" id="data_inicio_aluguel" required>
@@ -64,14 +65,39 @@
                         <div id="veiculos-list"></div>
                     </div>
                     
-                    <div id="view-lancar-km" class="view" style="display: none;"><h3>Lançar KM (Em breve)</h3></div>
-                    <div id="view-lancar-combustivel" class="view" style="display: none;"><h3>Lançar Gasto de Combustível (Em breve)</h3></div>
+                    <div id="view-lancar-km" class="view" style="display: none;">
+                        <h3>Lançar Nova Viagem</h3>
+                        <form id="viagemForm">
+                            <label for="viagem-veiculo-select">Selecionar Veículo</label>
+                            <select id="viagem-veiculo-select" required></select>
+                            <label for="viagem-data">Data da Viagem</label>
+                            <input type="date" id="viagem-data" required>
+                            <label for="viagem-distancia">Distância Percorrida (KM)</label>
+                            <input type="number" step="0.1" id="viagem-distancia" placeholder="Ex: 120.5" required>
+                            <label for="viagem-saida">Local de Saída</label>
+                            <input type="text" id="viagem-saida" placeholder="Comece a digitar um endereço...">
+                            <label for="viagem-chegada">Local de Chegada</label>
+                            <input type="text" id="viagem-chegada" placeholder="Comece a digitar um endereço...">
+                            <label for="viagem-descricao">Descrição</label>
+                            <textarea id="viagem-descricao" rows="3" placeholder="Ex: Visita técnica..."></textarea>
+                            <button type="submit">Registrar Viagem</button>
+                        </form>
+                    </div>
+
+                    <div id="view-listar-viagens" class="view" style="display: none;">
+                        <h3>Viagens Registradas</h3>
+                        <div id="viagens-list"></div>
+                    </div>
+                    
+                    <div id="view-lancar-despesa" class="view" style="display: none;">
+                        <h3>Lançamento de Despesa (Em breve)</h3>
+                    </div>
+
                     <div id="view-lancar-pagamento" class="view" style="display: none;"><h3>Lançar Pagamento de KM (Em breve)</h3></div>
                     <div id="view-relatorios" class="view" style="display: none;"><h3>Relatórios (Em breve)</h3></div>
                 </main>
             </div>
         </div>
-
         <div id="message-area" class="message"></div>
     </div>
 
@@ -86,19 +112,14 @@
             <h2>Editar Veículo</h2>
             <form id="editVeiculoForm">
                 <input type="hidden" id="edit-veiculo-id">
-                
                 <label for="edit-placa">Placa</label>
                 <input type="text" id="edit-placa" required>
-
                 <label for="edit-descricao">Descrição</label>
                 <input type="text" id="edit-descricao" required>
-
                 <label for="edit-data_inicio_aluguel">Data de Início do Aluguel</label>
                 <input type="date" id="edit-data_inicio_aluguel" required>
-
                 <label for="edit-data_fim_aluguel">Data de Fim do Aluguel (opcional)</label>
                 <input type="date" id="edit-data_fim_aluguel">
-
                 <div class="modal-actions">
                     <button type="submit">Salvar Alterações</button>
                     <button type="button" id="cancel-edit-btn">Cancelar</button>
