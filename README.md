@@ -4,54 +4,53 @@
 ![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+
+> 🚧 **Atenção:** Este é um projeto que estou desenvolvendo ativamente. Novas funcionalidades e melhorias serão adicionadas em breve! 🚧
 
 ## 📖 Sobre o Projeto
 
-O **Reembolso de Km - Telsign** é uma aplicação Full Stack desenvolvida para gerenciar e controlar o reembolso de quilometragem de veículos alugados. O sistema permite que usuários se cadastrem, façam login de forma segura e gerenciem seus lançamentos e apurem o valor pago ao final de cada periodo, registrando o início e o fim de seus períodos de rodagem.
+Olá! Bem-vindo ao repositório do meu projeto **Reembolso de Km - Telsign**.
 
-A aplicação é composta por uma API RESTful robusta no backend e uma interface de usuário simples e reativa no frontend para interagir com os dados.
+Iniciei este projeto Full Stack para resolver um problema prático: a necessidade de um sistema simples e eficiente para gerenciar e controlar o reembolso de quilometragem de veículos alugados. A ideia é criar um pequeno ERP web onde eu possa me autenticar de forma segura e gerenciar todo o ciclo de vida dos veículos, desde o início do aluguel até o seu término.
 
-## ✨ Funcionalidades
+Aqui você encontrará todo o código da API RESTful que construí com Node.js, e também da interface de usuário (frontend) que desenvolvi para interagir com os dados.
 
--   **Autenticação Segura:** Sistema de Registro e Login de usuários com senhas criptografadas e autenticação baseada em JSON Web Tokens (JWT).
+## ✨ Funcionalidades Atuais
+
+Até o momento, implementei as seguintes funcionalidades principais:
+
+-   **Autenticação Segura:** Criei um sistema completo de Registro e Login de usuários, com senhas devidamente criptografadas e autenticação via JSON Web Tokens (JWT).
 -   **Gerenciamento de Veículos:**
-    -   Cadastro de novos veículos alugados, com placa, descrição e data de início do aluguel.
-    -   Listagem de todos os veículos associados ao usuário logado.
-    -   Funcionalidade para finalizar o aluguel de um veículo, adicionando uma data de término.
--   **Rotas Protegidas:** Uso de middleware para garantir que apenas usuários autenticados possam acessar e gerenciar seus próprios veículos.
--   **Organização de Banco de Dados:** Utilização de `schemas` no PostgreSQL para separar logicamente os dados de autenticação (`auth`) e da aplicação (`app`).
+    -   Cadastro de novos veículos alugados, informando placa, descrição e a data de início do aluguel.
+    -   Listagem de todos os veículos que cadastrei para meu usuário.
+    -   Funcionalidade para registrar o fim de um aluguel, adicionando uma data de término.
+-   **Segurança da API:** Desenvolvi um middleware de autenticação para proteger as rotas, garantindo que apenas usuários logados possam gerenciar seus próprios veículos.
+-   **Organização do Banco de Dados:** Optei por usar `schemas` no PostgreSQL para manter o banco bem organizado, separando os dados de autenticação (`auth`) dos dados da aplicação (`app`).
 
-## 🛠️ Tecnologias Utilizadas
+## 🛠️ As Tecnologias que Escolhi
 
-A aplicação é dividida em duas partes principais:
+Para construir este projeto, optei pelas seguintes tecnologias:
 
 ### Backend (API)
--   **Node.js:** Ambiente de execução para o JavaScript no servidor.
--   **Express.js:** Framework para a construção da API e gerenciamento de rotas.
--   **PostgreSQL:** Banco de dados relacional para persistência dos dados.
+-   **Node.js & Express.js:** Para a construção da API e o gerenciamento das rotas.
+-   **PostgreSQL:** Como meu banco de dados relacional.
 -   **Autenticação:**
-    -   `jsonwebtoken` (JWT) para geração e verificação de tokens de acesso.
-    -   `bcryptjs` para criptografia (hashing) de senhas.
--   **Outros:** `pg` (driver do PostgreSQL), `dotenv` (gerenciamento de variáveis de ambiente), `cors`.
+    -   `jsonwebtoken` (JWT) para a geração e verificação dos tokens.
+    -   `bcryptjs` para garantir a segurança das senhas.
+-   **Outros:** `pg` (driver do PostgreSQL), `dotenv` e `cors`.
 
 ### Frontend
--   **HTML5:** Estrutura da página web.
--   **CSS3:** Estilização da interface.
--   **JavaScript (Vanilla JS):** Lógica do lado do cliente e interatividade.
--   **Fetch API:** Para realizar as requisições HTTP para o backend.
--   **VS Code Live Server:** Para servir o frontend em ambiente de desenvolvimento.
+-   **HTML5, CSS3 & JavaScript (Vanilla JS):** Decidi manter o frontend simples e direto por enquanto, focando na lógica e na interação com a API usando a Fetch API.
+-   **VS Code Live Server:** Para servir o frontend no meu ambiente de desenvolvimento.
 
 ## 🚀 Como Rodar o Projeto
 
-Siga os passos abaixo para configurar e rodar o projeto em seu ambiente local.
+Para que você possa configurar e rodar este projeto em sua máquina, preparei os seguintes passos:
 
 ### Pré-requisitos
 
--   [Node.js](https://nodejs.org/en/)
--   [PostgreSQL](https://www.postgresql.org/download/) instalado e rodando.
--   Um cliente de API como [Thunder Client](https://www.thunderclient.com/) (extensão do VS Code) ou [Postman](https://www.postman.com/).
+-   [Node.js](https://nodejs.org/en/) (recomendo a versão LTS)
+-   [PostgreSQL](https://www.postgresql.org/download/)
 
 ### Instalação
 
@@ -61,62 +60,58 @@ Siga os passos abaixo para configurar e rodar o projeto em seu ambiente local.
     cd Reembolso-Km-Telsign
     ```
 
-2.  **Configurei o Backend:**
+2.  **Configure o Backend:**
     ```bash
     cd backend
     npm install
     ```
 
-3.  **Configurei o Banco de Dados:**
-    -   Acesse seu servidor PostgreSQL.
-    -   Criei um banco de dados, um usuário e dei as permissões necessárias.
-    -   Executei os scripts SQL para criar os schemas (`auth`, `app`) e as tabelas (`usuarios`, `veiculos`) conforme definido durante o desenvolvimento.
+3.  **Configure o Banco de Dados:**
+    -   Você precisará criar um banco de dados e um usuário no seu PostgreSQL.
+    -   Depois, execute os scripts SQL que utilizei para criar os schemas (`auth`, `app`) e as tabelas (`usuarios`, `veiculos`).
 
 4.  **Variáveis de Ambiente:**
-    -   Na pasta `backend`, criado um arquivo chamado `.env`.
-    -   usado o modelo abaixo e preenchido com minhas credenciais do PostgreSQL:
+    -   Na pasta `backend`, crie um arquivo `.env`.
+    -   Utilize o modelo abaixo para preencher com suas credenciais:
     ```env
-    # Configuração do Servidor
     PORT=3000
-
-    # Configuração do Banco de Dados PostgreSQL
     DB_HOST=localhost
     DB_USER=seu_usuario_do_banco
     DB_PASSWORD=sua_senha_do_banco
     DB_NAME=reembolso_km_telsign
-
-    # Segredo do JWT
     JWT_SECRET=SUA_CHAVE_SECRETA_E_LONGA_AQUI
     ```
 
 ### Executando a Aplicação
 
-Você precisará de dois terminais abertos para rodar o backend e o frontend simultaneamente.
-
-1.  **Inicie o Backend:**
+1.  **Inicie o Backend (Terminal 1):**
     ```bash
-    # No terminal 1, dentro da pasta /backend
+    # Dentro da pasta /backend
     npm run dev
     ```
-    O servidor da API estará rodando em `http://localhost:3000`.
 
-2.  **Inicie o Frontend:**
-    -   Abra o projeto no VS Code.
-    -   Certifique-se de ter a extensão **Live Server** instalada.
-    -   Clique com o botão direito no arquivo `frontend/index.html` e selecione "Open with Live Server".
-    -   O navegador abrirá a aplicação, geralmente em `http://127.0.0.1:5500`.
+2.  **Inicie o Frontend (VS Code):**
+    -   Com a extensão **Live Server** instalada, clique com o botão direito no arquivo `frontend/index.html` e selecione "Open with Live Server".
 
-##  endpoints da API
+## 🗺️ Endpoints da API (Versão Atual)
 
--   `POST /api/auth/register` - Registra um novo usuário.
--   `POST /api/auth/login` - Autentica um usuário e retorna um token JWT.
--   `GET /api/veiculos` - **(Protegido)** Lista todos os veículos do usuário autenticado.
--   `POST /api/veiculos` - **(Protegido)** Cadastra um novo veículo para o usuário autenticado.
--   `PATCH /api/veiculos/:id/finalizar` - **(Protegido)** Adiciona uma data de fim para o aluguel de um veículo.
+-   `POST /api/auth/register`
+-   `POST /api/auth/login`
+-   `GET /api/veiculos` (Protegido)
+-   `POST /api/veiculos` (Protegido)
+-   `PATCH /api/veiculos/:id/finalizar` (Protegido)
+
+## 🔮 Próximos Passos
+
+Como o projeto está em desenvolvimento, meus próximos objetivos são:
+-   [ ] Implementar o CRUD completo para **Viagens**.
+-   [ ] Vincular viagens a um veículo e calcular o valor do reembolso.
+-   [ ] Criar um módulo de **Pagamentos** para fechar os ciclos semanais.
+-   [ ] Melhorar a interface e a experiência do usuário.
 
 ## 👨‍💻 Autor
 
-Em Desenvolvimento por **Jefferson Lima**.
+Olá! Eu sou Jefferson Lima, o desenvolvedor por trás deste projeto.
 
 -   GitHub: [@Jefferson23br](https://github.com/Jefferson23br)
 
