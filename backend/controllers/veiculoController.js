@@ -24,6 +24,40 @@ exports.createVeiculo = async (req, res) => {
   }
 };
 
+exports.updateVeiculo = async (req, res) => {
+    const veiculoId = req.params.id;
+    const { placa, descricao, data_inicio_aluguel, data_fim_aluguel } = req.body;
+    const usuario_id = req.user.id;
+
+    if (!placa || !descricao || !data_inicio_aluguel) {
+        return res.status(400).json({ message: 'Todos os campos, exceto data de fim, são obrigatórios.' });
+    }
+
+    try {
+        const queryText = `
+            UPDATE app.veiculos 
+            SET placa = $1, descricao = $2, data_inicio_aluguel = $3, data_fim_aluguel = $4 
+            WHERE id = $5 AND usuario_id = $6 
+            RETURNING *`;
+        
+
+        const dataFim = data_fim_aluguel ? data_fim_aluguel : null;
+
+        const values = [placa, descricao, data_inicio_aluguel, dataFim, veiculoId, usuario_id];
+
+        const result = await db.query(queryText, values);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Veículo não encontrado ou não pertence a este usuário.' });
+        }
+
+        res.status(200).json({ message: 'Veículo atualizado com sucesso!', veiculo: result.rows[0] });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro no servidor ao atualizar o veículo.' });
+    }
+};
+
 exports.getMeusVeiculos = async (req, res) => {
   const usuario_id = req.user.id;
 
