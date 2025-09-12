@@ -15,57 +15,65 @@ function initMap() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+
     const mainContainer = document.getElementById('main-container');
     const loginArea = document.getElementById('login-area');
     const dashboardArea = document.getElementById('dashboard-area');
     const loginForm = document.getElementById('loginForm');
-    const veiculoForm = document.getElementById('veiculoForm');
-    const veiculosList = document.getElementById('veiculos-list');
     const logoutButton = document.getElementById('logoutButton');
     const messageArea = document.getElementById('message-area');
     const menuButtons = document.querySelectorAll('.dashboard-menu button');
     const views = document.querySelectorAll('.view');
-    const editModal = document.getElementById('edit-veiculo-modal');
-    const editForm = document.getElementById('editVeiculoForm');
-    const cancelEditBtn = document.getElementById('cancel-edit-btn');
     const pageTitle = document.getElementById('page-title');
     const loginTitle = document.getElementById('login-title');
     const dashboardTitle = document.getElementById('dashboard-title');
+    
+    const veiculoForm = document.getElementById('veiculoForm');
+    const veiculosList = document.getElementById('veiculos-list');
+    const editModal = document.getElementById('edit-veiculo-modal');
+    const editForm = document.getElementById('editVeiculoForm');
+    const cancelEditBtn = document.getElementById('cancel-edit-btn');
+    
     const viagemForm = document.getElementById('viagemForm');
     const viagemVeiculoSelect = document.getElementById('viagem-veiculo-select');
     const viagensList = document.getElementById('viagens-list');
 
+    const despesaForm = document.getElementById('despesaForm');
+    const despesasasList = document.getElementById('despesas-list');
+    const despesaVeiculoSelect = document.getElementById('despesa-veiculo-select');
+    const editDespesaModal = document.getElementById('edit-despesa-modal');
+    const editDespesaForm = document.getElementById('editDespesaForm');
+    const cancelEditDespesaBtn = document.getElementById('cancel-edit-despesa-btn');
+
     const API_URL = 'https://api.auctusconsultoria.com.br';
-    
     const CONFIG = { appName: "Reembolso de Km" };
 
     const showView = (viewId) => {
         views.forEach(view => view.style.display = 'none');
         const viewToShow = document.getElementById(viewId);
         if (viewToShow) { viewToShow.style.display = 'block'; }
-        menuButtons.forEach(button => {
-            button.classList.toggle('active', button.dataset.view === viewId);
-        });
+        menuButtons.forEach(button => button.classList.toggle('active', button.dataset.view === viewId));
+        
         if (viewId === 'view-listar-veiculo') fetchVeiculos();
-        if (viewId === 'view-lancar-km') populateVeiculoSelect();
+        if (viewId === 'view-lancar-km') populateVeiculoSelect(viagemVeiculoSelect);
         if (viewId === 'view-listar-viagens') fetchViagens();
+        if (viewId === 'view-lancar-despesa') populateVeiculoSelect(despesaVeiculoSelect);
+        if (viewId === 'view-listar-despesas') fetchDespesas();
     };
 
-    menuButtons.forEach(button => {
-        button.addEventListener('click', (e) => showView(e.target.dataset.view));
-    });
+    menuButtons.forEach(button => button.addEventListener('click', (e) => showView(e.target.dataset.view)));
 
     const showLogin = () => { mainContainer.classList.add('container-login'); mainContainer.classList.remove('container-app'); loginArea.style.display = 'block'; dashboardArea.style.display = 'none'; };
     const showDashboard = () => { mainContainer.classList.remove('container-login'); mainContainer.classList.add('container-app'); loginArea.style.display = 'none'; dashboardArea.style.display = 'block'; showView('view-home'); };
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
         try {
             const response = await fetch(`${API_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email: emailInput.value, password: passwordInput.value })
             });
             const data = await response.json();
             if (!response.ok) throw new Error(data.message);
@@ -78,7 +86,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     logoutButton.addEventListener('click', () => { localStorage.removeItem('token'); messageArea.textContent = 'Você saiu com sucesso.'; messageArea.className = 'message success'; showLogin(); });
-
+    
+    const populateVeiculoSelect = async (selectElement) => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`${API_URL}/api/veiculos`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (!response.ok) throw new Error('Não foi possível carregar os veículos.');
+            const veiculos = await response.json();
+            selectElement.innerHTML = '<option value="">-- Selecione um Veículo --</option>';
+            veiculos.forEach(v => {
+                const option = document.createElement('option');
+                option.value = v.id;
+                option.textContent = `${v.placa} (${v.descricao})`;
+                selectElement.appendChild(option);
+            });
+        } catch (error) {
+            messageArea.textContent = `Erro: ${error.message}`;
+        }
+    };
+    
     const fetchVeiculos = async () => {
         const token = localStorage.getItem('token');
         if (!token) { showLogin(); return; }
@@ -176,26 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     cancelEditBtn.addEventListener('click', () => { editModal.style.display = 'none'; });
 
-    const populateVeiculoSelect = async () => {
-        const token = localStorage.getItem('token');
-        try {
-            const response = await fetch(`${API_URL}/api/veiculos`, { headers: { 'Authorization': `Bearer ${token}` } });
-            if (!response.ok) throw new Error('Não foi possível carregar os veículos.');
-            const veiculos = await response.json();
-            viagemVeiculoSelect.innerHTML = '<option value="">-- Selecione um Veículo --</option>';
-            veiculos.forEach(v => {
-                if (!v.data_fim_aluguel) {
-                    const option = document.createElement('option');
-                    option.value = v.id;
-                    option.textContent = `${v.placa} (${v.descricao})`;
-                    viagemVeiculoSelect.appendChild(option);
-                }
-            });
-        } catch (error) {
-            messageArea.textContent = `Erro: ${error.message}`;
-            messageArea.className = 'message error';
-        }
-    };
     viagemForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const token = localStorage.getItem('token');
@@ -263,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
             messageArea.className = 'message error';
         }
     };
-
+    
     const fetchDespesas = async () => {
         const token = localStorage.getItem('token');
         try {
@@ -297,7 +303,6 @@ document.addEventListener('DOMContentLoaded', () => {
             messageArea.className = 'message error';
         }
     };
-    
     despesaForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const token = localStorage.getItem('token');
@@ -321,7 +326,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(data.message);
             messageArea.textContent = 'Despesa registrada com sucesso!';
             messageArea.className = 'message success';
-
             despesaForm.reset();
             showView('view-listar-despesas');
         } catch (error) {
@@ -329,10 +333,8 @@ document.addEventListener('DOMContentLoaded', () => {
             messageArea.className = 'message error';
         }
     });
-
     despesasasList.addEventListener('click', async (event) => {
         const token = localStorage.getItem('token');
-
         if (event.target.classList.contains('delete-despesa-btn')) {
             const id = event.target.dataset.id;
             if (confirm('Tem certeza que deseja excluir esta despesa?')) {
@@ -349,13 +351,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
-
         if (event.target.classList.contains('edit-despesa-btn')) {
             const id = event.target.dataset.id;
             const response = await fetch(`${API_URL}/api/despesas`, { headers: { 'Authorization': `Bearer ${token}` }});
             const despesas = await response.json();
             const despesaParaEditar = despesas.find(d => d.id == id);
-            
             if (despesaParaEditar) {
                 await populateVeiculoSelect(document.getElementById('edit-despesa-veiculo-select'));
                 document.getElementById('edit-despesa-id').value = despesaParaEditar.id;
@@ -371,7 +371,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
-    
     editDespesaForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const token = localStorage.getItem('token');
@@ -403,7 +402,6 @@ document.addEventListener('DOMContentLoaded', () => {
             messageArea.className = 'message error';
         }
     });
-
     cancelEditDespesaBtn.addEventListener('click', () => { editDespesaModal.style.display = 'none'; });
 
     pageTitle.textContent = CONFIG.appName;
