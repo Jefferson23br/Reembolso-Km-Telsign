@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const viagemVeiculoSelect = document.getElementById('viagem-veiculo-select');
     const viagensList = document.getElementById('viagens-list');
 
-    const API_URL = 'http:/72.60..215:3000';
+    const API_URL = 'http://72.60..215:3000';
     const CONFIG = { appName: "Reembolso de Km" };
 
     const showView = (viewId) => {
