@@ -1,6 +1,7 @@
+// Função global que será chamada pelo script do Google Maps para inicializar o Autocomplete
 function initMap() {
     const options = {
-        componentRestrictions: { country: "br" }, 
+        componentRestrictions: { country: "br" }, // Restringe buscas ao Brasil
         fields: ["formatted_address", "name"],
         strictBounds: false,
     };
@@ -15,6 +16,7 @@ function initMap() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // --- SELEÇÃO DE ELEMENTOS ---
     const mainContainer = document.getElementById('main-container');
     const loginArea = document.getElementById('login-area');
     const dashboardArea = document.getElementById('dashboard-area');
@@ -35,9 +37,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const viagemVeiculoSelect = document.getElementById('viagem-veiculo-select');
     const viagensList = document.getElementById('viagens-list');
 
-    const API_URL = '';
+    // CORREÇÃO DEFINITIVA: Aponta para o endereço do servidor Nginx na porta 80 (padrão)
+    // Agora o frontend sempre saberá onde encontrar a API.
+    const API_URL = 'http://72.60.61.215';
+    
     const CONFIG = { appName: "Reembolso de Km" };
 
+    // --- LÓGICA DE NAVEGAÇÃO ---
     const showView = (viewId) => {
         views.forEach(view => view.style.display = 'none');
         const viewToShow = document.getElementById(viewId);
@@ -54,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', (e) => showView(e.target.dataset.view));
     });
 
+    // --- LÓGICA DE AUTENTICAÇÃO ---
     const showLogin = () => { mainContainer.classList.add('container-login'); mainContainer.classList.remove('container-app'); loginArea.style.display = 'block'; dashboardArea.style.display = 'none'; };
     const showDashboard = () => { mainContainer.classList.remove('container-login'); mainContainer.classList.add('container-app'); loginArea.style.display = 'none'; dashboardArea.style.display = 'block'; showView('view-home'); };
     loginForm.addEventListener('submit', async (event) => {
@@ -78,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     logoutButton.addEventListener('click', () => { localStorage.removeItem('token'); messageArea.textContent = 'Você saiu com sucesso.'; messageArea.className = 'message success'; showLogin(); });
 
+    // --- LÓGICA DE VEÍCULOS E MODAL ---
     const fetchVeiculos = async () => {
         const token = localStorage.getItem('token');
         if (!token) { showLogin(); return; }
@@ -175,6 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     cancelEditBtn.addEventListener('click', () => { editModal.style.display = 'none'; });
 
+    // --- LÓGICA DE VIAGENS ---
     const populateVeiculoSelect = async () => {
         const token = localStorage.getItem('token');
         try {
@@ -223,7 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
             messageArea.className = 'message error';
         }
     });
-    
     const fetchViagens = async () => {
         const token = localStorage.getItem('token');
         if (!token) { showLogin(); return; }
@@ -239,22 +247,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     const viagemDiv = document.createElement('div');
                     viagemDiv.className = 'viagem-item';
                     const dataViagem = new Date(v.data_viagem).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
-
                     let statusClass = '';
                     switch (v.status_pagamento) {
-                        case 'A Pagar':
-                            statusClass = 'status-apagar';
-                            break;
-                        case 'Pago':
-                            statusClass = 'status-pago';
-                            break;
-                        case 'Pago Parcial':
-                            statusClass = 'status-pago-parcial';
-                            break;
-                        default:
-                            statusClass = '';
+                        case 'A Pagar': statusClass = 'status-apagar'; break;
+                        case 'Pago': statusClass = 'status-pago'; break;
+                        case 'Pago Parcial': statusClass = 'status-pago-parcial'; break;
+                        default: statusClass = '';
                     }
-
                     viagemDiv.innerHTML = `
                         <div class="viagem-header">
                             <span>${dataViagem} - ${v.placa} (${Number(v.distancia_percorrida).toFixed(2)} km)</span>
@@ -273,6 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // --- INICIALIZAÇÃO ---
     pageTitle.textContent = CONFIG.appName;
     loginTitle.textContent = CONFIG.appName;
     dashboardTitle.textContent = `Painel ${CONFIG.appName}`;
