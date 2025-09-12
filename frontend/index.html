@@ -38,7 +38,8 @@
                     <button data-view="view-lancar-km">Lançar KM</button>
                     <button data-view="view-listar-viagens">Listar Viagens</button>
                     <button data-view="view-lancar-despesa">Lançar Despesa</button>
-                    <button data-view="view-listar-despesas">Listar Despesas</button> <button data-view="view-lancar-pagamento">Lançar Pagamento</button>
+                    <button data-view="view-listar-despesas">Listar Despesas</button>
+                    <button data-view="view-lancar-pagamento">Lançar Pagamento</button>
                     <button data-view="view-relatorios">Relatórios</button>
                 </nav>
                 <main id="dashboard-content" class="dashboard-content">
@@ -46,12 +47,9 @@
                     <div id="view-cadastrar-veiculo" class="view" style="display: none;">
                         <h3>Cadastrar Novo Veículo Alugado</h3>
                         <form id="veiculoForm">
-                            <label for="placa">Placa</label>
-                            <input type="text" id="placa" required>
-                            <label for="descricao">Descrição</label>
-                            <input type="text" id="descricao" required>
-                            <label for="data_inicio_aluguel">Data de Início do Aluguel</label>
-                            <input type="date" id="data_inicio_aluguel" required>
+                            <label for="placa">Placa</label><input type="text" id="placa" required>
+                            <label for="descricao">Descrição</label><input type="text" id="descricao" required>
+                            <label for="data_inicio_aluguel">Data de Início do Aluguel</label><input type="date" id="data_inicio_aluguel" required>
                             <button type="submit">Cadastrar Veículo</button>
                         </form>
                     </div>
@@ -59,64 +57,32 @@
                     <div id="view-lancar-km" class="view" style="display: none;">
                         <h3>Lançar Nova Viagem</h3>
                         <form id="viagemForm">
-                            <label for="viagem-veiculo-select">Selecionar Veículo</label>
-                            <select id="viagem-veiculo-select" required></select>
-                            <label for="viagem-data">Data da Viagem</label>
-                            <input type="date" id="viagem-data" required>
-                            <label for="viagem-distancia">Distância Percorrida (KM)</label>
-                            <input type="number" step="0.1" id="viagem-distancia" placeholder="Ex: 120.5" required>
-                            <label for="viagem-saida">Local de Saída</label>
-                            <input type="text" id="viagem-saida" placeholder="Comece a digitar um endereço...">
-                            <label for="viagem-chegada">Local de Chegada</label>
-                            <input type="text" id="viagem-chegada" placeholder="Comece a digitar um endereço...">
-                            <label for="viagem-descricao">Descrição</label>
-                            <textarea id="viagem-descricao" rows="3" placeholder="Ex: Visita técnica..."></textarea>
+                            <label for="viagem-veiculo-select">Selecionar Veículo</label><select id="viagem-veiculo-select" required></select>
+                            <label for="viagem-data">Data da Viagem</label><input type="date" id="viagem-data" required>
+                            <label for="viagem-distancia">Distância Percorrida (KM)</label><input type="number" step="0.1" id="viagem-distancia" placeholder="Ex: 120.5" required>
+                            <label for="viagem-saida">Local de Saída</label><input type="text" id="viagem-saida" placeholder="Comece a digitar um endereço...">
+                            <label for="viagem-chegada">Local de Chegada</label><input type="text" id="viagem-chegada" placeholder="Comece a digitar um endereço...">
+                            <label for="viagem-descricao">Descrição</label><textarea id="viagem-descricao" rows="3" placeholder="Ex: Visita técnica..."></textarea>
                             <button type="submit">Registrar Viagem</button>
                         </form>
                     </div>
                     <div id="view-listar-viagens" class="view" style="display: none;"><h3>Viagens Registradas</h3><div id="viagens-list"></div></div>
-                    
                     <div id="view-lancar-despesa" class="view" style="display: none;">
                         <h3>Lançar Nova Despesa</h3>
                         <form id="despesaForm">
-                            <label for="despesa-veiculo-select">Veículo Associado</label>
-                            <select id="despesa-veiculo-select" required></select>
-                            <label for="despesa-data">Data da Despesa</label>
-                            <input type="date" id="despesa-data" required>
-                            <label for="despesa-tipo">Tipo de Despesa</label>
-                            <select id="despesa-tipo" required>
-                                <option value="">-- Selecione o Tipo --</option>
-                                <option value="Manutenção Veicular">Manutenção Veicular</option>
-                                <option value="Implemento">Implemento</option>
-                                <option value="Combustível">Combustível</option>
-                            </select>
-                            <label for="despesa-forma-pagamento">Forma de Pagamento</label>
-                            <select id="despesa-forma-pagamento" required>
-                                <option value="">-- Selecione a Forma --</option>
-                                <option value="Débito">Débito</option>
-                                <option value="Crédito">Crédito</option>
-                                <option value="Dinheiro">Dinheiro</option>
-                            </select>
-                            <label for="despesa-valor">Valor (R$)</label>
-                            <input type="number" step="0.01" id="despesa-valor" placeholder="Ex: 150.75" required>
-                            <label for="despesa-status-pagamento">Status do Pagamento</label>
-                            <select id="despesa-status-pagamento" required>
-                                <option value="Não Pago">Não Pago</option>
-                                <option value="Pago">Pago</option>
-                            </select>
-                            <label for="despesa-comprovante-file">Anexar Comprovante (Opcional)</label>
-                            <input type.="file" id="despesa-comprovante-file">
-                            <input type="hidden" id="despesa-link-comprovante"> <label for="despesa-descricao">Descrição (Opcional)</label>
-                            <textarea id="despesa-descricao" rows="3"></textarea>
+                            <label for="despesa-veiculo-select">Veículo Associado</label><select id="despesa-veiculo-select" required></select>
+                            <label for="despesa-data">Data da Despesa</label><input type="date" id="despesa-data" required>
+                            <label for="despesa-tipo">Tipo de Despesa</label><select id="despesa-tipo" required><option value="">-- Selecione o Tipo --</option><option value="Manutenção Veicular">Manutenção Veicular</option><option value="Implemento">Implemento</option><option value="Combustível">Combustível</option></select>
+                            <label for="despesa-forma-pagamento">Forma de Pagamento</label><select id="despesa-forma-pagamento" required><option value="">-- Selecione a Forma --</option><option value="Débito">Débito</option><option value="Crédito">Crédito</option><option value="Dinheiro">Dinheiro</option></select>
+                            <label for="despesa-valor">Valor (R$)</label><input type="number" step="0.01" id="despesa-valor" placeholder="Ex: 150.75" required>
+                            <label for="despesa-status-pagamento">Status do Pagamento</label><select id="despesa-status-pagamento" required><option value="Não Pago">Não Pago</option><option value="Pago">Pago</option></select>
+                            <label for="despesa-comprovante-file">Anexar Comprovante (Opcional)</label><input type="file" id="despesa-comprovante-file">
+                            <input type="hidden" id="despesa-link-comprovante">
+                            <label for="despesa-descricao">Descrição (Opcional)</label><textarea id="despesa-descricao" rows="3"></textarea>
                             <button type="submit">Registrar Despesa</button>
                         </form>
                     </div>
-                    
-                    <div id="view-listar-despesas" class="view" style="display: none;">
-                        <h3>Despesas Registradas</h3>
-                        <div id="despesas-list"></div>
-                    </div>
-                    
+                    <div id="view-listar-despesas" class="view" style="display: none;"><h3>Despesas Registradas</h3><div id="despesas-list"></div></div>
                     <div id="view-lancar-pagamento" class="view" style="display: none;"><h3>Lançar Pagamento de KM (Em breve)</h3></div>
                     <div id="view-relatorios" class="view" style="display: none;"><h3>Relatórios (Em breve)</h3></div>
                 </main>
@@ -125,10 +91,31 @@
         <div id="message-area" class="message"></div>
     </div>
     <footer class="footer">&copy; <span id="currentYear"></span> Grupo Auctus. Todos os direitos reservados.</footer>
+
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAI9d7GZ9Xk2Zniq7keuIwO9Z2pW1rKO6o&libraries=places&callback=initMap" async defer></script>
     <script src="app.js"></script>
     
-    <div id="edit-veiculo-modal" class="modal-overlay" style="display: none;">...</div>
+    <div id="edit-veiculo-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h2>Editar Veículo</h2>
+            <form id="editVeiculoForm">
+                <input type="hidden" id="edit-veiculo-id">
+                <label for="edit-placa">Placa</label>
+                <input type="text" id="edit-placa" required>
+                <label for="edit-descricao">Descrição</label>
+                <input type="text" id="edit-descricao" required>
+                <label for="edit-data_inicio_aluguel">Data de Início do Aluguel</label>
+                <input type="date" id="edit-data_inicio_aluguel" required>
+                <label for="edit-data_fim_aluguel">Data de Fim do Aluguel (opcional)</label>
+                <input type="date" id="edit-data_fim_aluguel">
+                <div class="modal-actions">
+                    <button type="submit">Salvar Alterações</button>
+                    <button type="button" id="cancel-edit-btn">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <div id="edit-despesa-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h2>Editar Despesa</h2>
@@ -139,15 +126,26 @@
                 <label for="edit-despesa-data">Data da Despesa</label>
                 <input type="date" id="edit-despesa-data" required>
                 <label for="edit-despesa-tipo">Tipo de Despesa</label>
-                <select id="edit-despesa-tipo" required><option value="Manutenção Veicular">Manutenção Veicular</option><option value="Implemento">Implemento</option><option value="Combustível">Combustível</option></select>
+                <select id="edit-despesa-tipo" required>
+                    <option value="Manutenção Veicular">Manutenção Veicular</option>
+                    <option value="Implemento">Implemento</option>
+                    <option value="Combustível">Combustível</option>
+                </select>
                 <label for="edit-despesa-forma-pagamento">Forma de Pagamento</label>
-                <select id="edit-despesa-forma-pagamento" required><option value="Débito">Débito</option><option value="Crédito">Crédito</option><option value="Dinheiro">Dinheiro</option></select>
+                <select id="edit-despesa-forma-pagamento" required>
+                    <option value="Débito">Débito</option>
+                    <option value="Crédito">Crédito</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                </select>
                 <label for="edit-despesa-valor">Valor (R$)</label>
                 <input type="number" step="0.01" id="edit-despesa-valor" required>
                 <label for="edit-despesa-status-pagamento">Status do Pagamento</label>
-                <select id="edit-despesa-status-pagamento" required><option value="Não Pago">Não Pago</option><option value="Pago">Pago</option></select>
+                <select id="edit-despesa-status-pagamento" required>
+                    <option value="Não Pago">Não Pago</option>
+                    <option value="Pago">Pago</option>
+                </select>
                 <label for="edit-despesa-link-comprovante">Link do Comprovante</label>
-                <input type="url" id="edit-despesa-link-comprovante">
+                <input type="url" id="edit-despesa-link-comprovante" readonly>
                 <label for="edit-despesa-descricao">Descrição</label>
                 <textarea id="edit-despesa-descricao" rows="3"></textarea>
                 <div class="modal-actions">
