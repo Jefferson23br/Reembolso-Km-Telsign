@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // CORREÇÃO DEFINITIVA: Aponta para o endereço do servidor Nginx na porta 80 (padrão)
     // Agora o frontend sempre saberá onde encontrar a API.
-    const API_URL = 'https://72.60.61.215';
+    const API_URL = 'https://api.auctusconsultoria.com.br';
     
     const CONFIG = { appName: "Reembolso de Km" };
 
