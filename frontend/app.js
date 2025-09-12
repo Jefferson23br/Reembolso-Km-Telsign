@@ -1,7 +1,6 @@
-// Função global que será chamada pelo script do Google Maps para inicializar o Autocomplete
 function initMap() {
     const options = {
-        componentRestrictions: { country: "br" }, // Restringe buscas ao Brasil
+        componentRestrictions: { country: "br" }, 
         fields: ["formatted_address", "name"],
         strictBounds: false,
     };
@@ -16,7 +15,6 @@ function initMap() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // --- SELEÇÃO DE ELEMENTOS ---
     const mainContainer = document.getElementById('main-container');
     const loginArea = document.getElementById('login-area');
     const dashboardArea = document.getElementById('dashboard-area');
@@ -37,13 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const viagemVeiculoSelect = document.getElementById('viagem-veiculo-select');
     const viagensList = document.getElementById('viagens-list');
 
-    // CORREÇÃO DEFINITIVA: Aponta para o endereço do servidor Nginx na porta 80 (padrão)
-    // Agora o frontend sempre saberá onde encontrar a API.
     const API_URL = 'https://api.auctusconsultoria.com.br';
     
     const CONFIG = { appName: "Reembolso de Km" };
 
-    // --- LÓGICA DE NAVEGAÇÃO ---
     const showView = (viewId) => {
         views.forEach(view => view.style.display = 'none');
         const viewToShow = document.getElementById(viewId);
@@ -60,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', (e) => showView(e.target.dataset.view));
     });
 
-    // --- LÓGICA DE AUTENTICAÇÃO ---
     const showLogin = () => { mainContainer.classList.add('container-login'); mainContainer.classList.remove('container-app'); loginArea.style.display = 'block'; dashboardArea.style.display = 'none'; };
     const showDashboard = () => { mainContainer.classList.remove('container-login'); mainContainer.classList.add('container-app'); loginArea.style.display = 'none'; dashboardArea.style.display = 'block'; showView('view-home'); };
     loginForm.addEventListener('submit', async (event) => {
@@ -85,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     logoutButton.addEventListener('click', () => { localStorage.removeItem('token'); messageArea.textContent = 'Você saiu com sucesso.'; messageArea.className = 'message success'; showLogin(); });
 
-    // --- LÓGICA DE VEÍCULOS E MODAL ---
     const fetchVeiculos = async () => {
         const token = localStorage.getItem('token');
         if (!token) { showLogin(); return; }
@@ -183,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     cancelEditBtn.addEventListener('click', () => { editModal.style.display = 'none'; });
 
-    // --- LÓGICA DE VIAGENS ---
     const populateVeiculoSelect = async () => {
         const token = localStorage.getItem('token');
         try {
@@ -272,7 +264,148 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- INICIALIZAÇÃO ---
+    const fetchDespesas = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`${API_URL}/api/despesas`, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (!response.ok) throw new Error('Falha ao buscar despesas.');
+            const despesas = await response.json();
+            despesasasList.innerHTML = '';
+            if (despesas.length === 0) {
+                despesasasList.innerHTML = '<p>Nenhuma despesa registrada.</p>';
+            } else {
+                despesas.forEach(d => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'despesa-item';
+                    const dataDespesa = new Date(d.data_despesa).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+                    itemDiv.innerHTML = `
+                        <div class="despesa-info">
+                            <strong>${d.tipo_despesa}</strong> - ${d.placa}
+                            <small>${dataDespesa} | ${d.forma_pagamento} | Status: ${d.status_pagamento}</small>
+                        </div>
+                        <strong class="despesa-valor">R$ ${Number(d.valor).toFixed(2)}</strong>
+                        <div class="despesa-actions">
+                            <button class="edit-despesa-btn" data-id="${d.id}">Editar</button>
+                            <button class="delete-despesa-btn" data-id="${d.id}">Excluir</button>
+                        </div>
+                    `;
+                    despesasasList.appendChild(itemDiv);
+                });
+            }
+        } catch (error) {
+            messageArea.textContent = `Erro: ${error.message}`;
+            messageArea.className = 'message error';
+        }
+    };
+    
+    despesaForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const token = localStorage.getItem('token');
+        const despesaData = {
+            veiculo_id: despesaVeiculoSelect.value,
+            data_despesa: document.getElementById('despesa-data').value,
+            tipo_despesa: document.getElementById('despesa-tipo').value,
+            forma_pagamento: document.getElementById('despesa-forma-pagamento').value,
+            valor: document.getElementById('despesa-valor').value,
+            status_pagamento: document.getElementById('despesa-status-pagamento').value,
+            link_comprovante: document.getElementById('despesa-link-comprovante').value,
+            descricao: document.getElementById('despesa-descricao').value,
+        };
+        try {
+            const response = await fetch(`${API_URL}/api/despesas`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`},
+                body: JSON.stringify(despesaData)
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message);
+            messageArea.textContent = 'Despesa registrada com sucesso!';
+            messageArea.className = 'message success';
+
+            despesaForm.reset();
+            showView('view-listar-despesas');
+        } catch (error) {
+            messageArea.textContent = `Erro: ${error.message}`;
+            messageArea.className = 'message error';
+        }
+    });
+
+    despesasasList.addEventListener('click', async (event) => {
+        const token = localStorage.getItem('token');
+
+        if (event.target.classList.contains('delete-despesa-btn')) {
+            const id = event.target.dataset.id;
+            if (confirm('Tem certeza que deseja excluir esta despesa?')) {
+                try {
+                    const response = await fetch(`${API_URL}/api/despesas/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.message);
+                    messageArea.textContent = 'Despesa excluída com sucesso!';
+                    messageArea.className = 'message success';
+                    fetchDespesas();
+                } catch (error) {
+                    messageArea.textContent = `Erro: ${error.message}`;
+                    messageArea.className = 'message error';
+                }
+            }
+        }
+
+        if (event.target.classList.contains('edit-despesa-btn')) {
+            const id = event.target.dataset.id;
+            const response = await fetch(`${API_URL}/api/despesas`, { headers: { 'Authorization': `Bearer ${token}` }});
+            const despesas = await response.json();
+            const despesaParaEditar = despesas.find(d => d.id == id);
+            
+            if (despesaParaEditar) {
+                await populateVeiculoSelect(document.getElementById('edit-despesa-veiculo-select'));
+                document.getElementById('edit-despesa-id').value = despesaParaEditar.id;
+                document.getElementById('edit-despesa-veiculo-select').value = despesaParaEditar.veiculo_id;
+                document.getElementById('edit-despesa-data').value = new Date(despesaParaEditar.data_despesa).toISOString().split('T')[0];
+                document.getElementById('edit-despesa-tipo').value = despesaParaEditar.tipo_despesa;
+                document.getElementById('edit-despesa-forma-pagamento').value = despesaParaEditar.forma_pagamento;
+                document.getElementById('edit-despesa-valor').value = despesaParaEditar.valor;
+                document.getElementById('edit-despesa-status-pagamento').value = despesaParaEditar.status_pagamento;
+                document.getElementById('edit-despesa-link-comprovante').value = despesaParaEditar.link_comprovante;
+                document.getElementById('edit-despesa-descricao').value = despesaParaEditar.descricao;
+                editDespesaModal.style.display = 'flex';
+            }
+        }
+    });
+    
+    editDespesaForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const token = localStorage.getItem('token');
+        const id = document.getElementById('edit-despesa-id').value;
+        const despesaData = {
+            veiculo_id: document.getElementById('edit-despesa-veiculo-select').value,
+            data_despesa: document.getElementById('edit-despesa-data').value,
+            tipo_despesa: document.getElementById('edit-despesa-tipo').value,
+            forma_pagamento: document.getElementById('edit-despesa-forma-pagamento').value,
+            valor: document.getElementById('edit-despesa-valor').value,
+            status_pagamento: document.getElementById('edit-despesa-status-pagamento').value,
+            link_comprovante: document.getElementById('edit-despesa-link-comprovante').value,
+            descricao: document.getElementById('edit-despesa-descricao').value,
+        };
+        try {
+            const response = await fetch(`${API_URL}/api/despesas/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(despesaData)
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message);
+            editDespesaModal.style.display = 'none';
+            fetchDespesas();
+            messageArea.textContent = 'Despesa atualizada com sucesso!';
+            messageArea.className = 'message success';
+        } catch (error) {
+            messageArea.textContent = `Erro: ${error.message}`;
+            messageArea.className = 'message error';
+        }
+    });
+
+    cancelEditDespesaBtn.addEventListener('click', () => { editDespesaModal.style.display = 'none'; });
+
     pageTitle.textContent = CONFIG.appName;
     loginTitle.textContent = CONFIG.appName;
     dashboardTitle.textContent = `Painel ${CONFIG.appName}`;

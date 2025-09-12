@@ -29,11 +29,11 @@ hr { border: 0; border-top: 1px solid #eee; margin: 2rem 0; }
 .dashboard-menu button.active { background-color: #007bff; color: white; }
 .dashboard-content { flex-grow: 1; }
 .view h3 { margin-top: 0; }
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; }
 .modal-content { background: white; padding: 2rem; border-radius: 8px; width: 90%; max-width: 500px; }
 .modal-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
-#cancel-edit-btn { background-color: #6c757d; }
-#cancel-edit-btn:hover { background-color: #5a6268; }
+#cancel-edit-btn, #cancel-edit-despesa-btn { background-color: #6c757d; }
+#cancel-edit-btn:hover, #cancel-edit-despesa-btn:hover { background-color: #5a6268; }
 .veiculo-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
 .veiculo-item button { width: auto; padding: 5px 10px; font-size: 0.85rem; margin-bottom: 0; }
 .viagem-item { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 10px; border-left: 4px solid #007bff; }
@@ -41,29 +41,23 @@ hr { border: 0; border-top: 1px solid #eee; margin: 2rem 0; }
 .viagem-item .viagem-header { font-weight: 600; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; }
 .viagem-item .viagem-details { font-size: 0.9rem; color: #555; }
 .pac-container { z-index: 1051 !important; }
-.status-badge {
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-.status-apagar {
-    background-color: #ffc107;
-    color: #333;
-}
-.status-pago {
-    background-color: #28a745;
-    color: white;
-}
-.status-pago-parcial {
-    background-color: #dc3545; 
-    color: white;
-}
+.status-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+.status-apagar { background-color: #ffc107; color: #333; }
+.status-pago { background-color: #28a745; color: white; }
+.status-pago-parcial { background-color: #dc3545; color: white; }
+.despesa-item { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 10px; border-left: 4px solid #6c757d; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+.despesa-info { flex-grow: 1; }
+.despesa-valor { font-size: 1.2rem; font-weight: 600; color: #333; margin-left: 1rem; text-align: right; }
+.despesa-info small { color: #555; width: 100%; margin-top: 5px; display: block; }
+.despesa-actions { display: flex; gap: 10px; }
+.despesa-actions button { width: auto; padding: 5px 10px; font-size: 0.85rem; margin: 0; }
 
 @media (max-width: 768px) {
     .dashboard-body { flex-direction: column; }
     .dashboard-menu { flex-basis: auto; }
     .container-app { width: 95%; padding: 1.5rem; }
     .viagem-item .viagem-header { flex-direction: column; align-items: flex-start; gap: 5px; }
+    .despesa-item { flex-direction: column; align-items: flex-start; }
+    .despesa-valor { text-align: left; margin-left: 0; margin-top: 10px; }
+    .despesa-actions { margin-top: 10px; }
 }
