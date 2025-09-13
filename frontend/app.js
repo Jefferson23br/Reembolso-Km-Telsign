@@ -583,32 +583,72 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    const fetchDashboardSummary = async () => {
-        const token = localStorage.getItem('token');
-        try {
-            const response = await fetch(`${API_URL}/api/dashboard/summary`, { 
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (!response.ok) throw new Error('Falha ao carregar o resumo.');
-            
-            const summary = await response.json();
+    // app.js - Substitua a função fetchDashboardSummary
 
-            document.getElementById('card-km-mes').textContent = `${summary.totalKmMes.toFixed(1)} km`;
-            document.getElementById('card-receber-mes').textContent = `R$ ${summary.totalAReceberMes.toFixed(2)}`;
-            document.getElementById('card-despesas-mes').textContent = `R$ ${summary.totalDespesasMes.toFixed(2)}`;
+const fetchDashboardSummary = async () => {
+    const token = localStorage.getItem('token');
+    
+    // Pega os valores dos filtros
+    const mes = document.getElementById('filter-month').value;
+    const ano = document.getElementById('filter-year').value;
 
-            const alertaDiv = document.getElementById('card-alerta-atrasados');
-            if (summary.pendentesMesesAnteriores > 0) {
-                alertaDiv.textContent = `Atenção: Você possui ${summary.pendentesMesesAnteriores} viagem(s) de meses anteriores com pagamento pendente.`;
-                alertaDiv.style.display = 'block';
-            } else {
-                alertaDiv.style.display = 'none';
-            }
+    // Constrói a URL da API com os parâmetros de filtro
+    const apiUrlWithFilters = `${API_URL}/api/dashboard/summary?mes=${mes}&ano=${ano}`;
 
-        } catch (error) {
-            document.getElementById('view-home').innerHTML = `<p style="color: red;">${error.message}</p>`;
+    try {
+        const response = await fetch(apiUrlWithFilters, { 
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error('Falha ao carregar o resumo.');
+        
+        const summary = await response.json();
+
+        document.getElementById('card-km-mes').textContent = `${summary.totalKmMes.toFixed(1)} km`;
+        document.getElementById('card-receber-mes').textContent = `R$ ${summary.totalAReceberMes.toFixed(2)}`;
+        document.getElementById('card-despesas-mes').textContent = `R$ ${summary.totalDespesasMes.toFixed(2)}`;
+
+        const alertaDiv = document.getElementById('card-alerta-atrasados');
+        if (summary.pendentesMesesAnteriores > 0) {
+            alertaDiv.textContent = `Atenção: Você possui ${summary.pendentesMesesAnteriores} viagem(s) de meses anteriores com pagamento pendente.`;
+            alertaDiv.style.display = 'block';
+        } else {
+            alertaDiv.style.display = 'none';
         }
-    };
+
+    } catch (error) {
+        document.getElementById('view-home').innerHTML = `<p style="color: red;">${error.message}</p>`;
+    }
+};
+
+// --- Adicione este novo bloco de código DENTRO do 'DOMContentLoaded' ---
+// (Pode ser antes da seção de inicialização no final do arquivo)
+
+function initializeDashboardFilters() {
+    const monthSelect = document.getElementById('filter-month');
+    const yearInput = document.getElementById('filter-year');
+    const applyFilterBtn = document.getElementById('apply-filter-btn');
+
+    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    
+    // Popula o select de meses
+    meses.forEach((mes, index) => {
+        const option = document.createElement('option');
+        option.value = index + 1; // 1 para Janeiro, 2 para Fevereiro, etc.
+        option.textContent = mes;
+        monthSelect.appendChild(option);
+    });
+
+    // Define os valores padrão para o mês e ano atuais
+    const hoje = new Date();
+    monthSelect.value = hoje.getMonth() + 1;
+    yearInput.value = hoje.getFullYear();
+
+    // Adiciona o listener para o botão
+    applyFilterBtn.addEventListener('click', fetchDashboardSummary);
+}
+
+// Chame esta função na inicialização
+initializeDashboardFilters();
     
     pageTitle.textContent = CONFIG.appName;
     loginTitle.textContent = CONFIG.appName;

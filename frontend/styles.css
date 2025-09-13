@@ -178,3 +178,44 @@ hr { border: 0; border-top: 1px solid #eee; margin: 2rem 0; }
     border: 1px solid #ffeeba;
     color: #856404;
 }
+/* styles.css - Adicionar ao final */
+
+.dashboard-filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.dashboard-filters h3 {
+    margin: 0;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group label {
+    margin-bottom: 2px;
+    font-size: 0.9rem;
+}
+
+.filter-group select, .filter-group input {
+    padding: 8px;
+    margin-bottom: 0;
+    min-width: 120px;
+}
+
+.filter-controls button {
+    padding: 8px 15px;
+    margin-bottom: 0;
+}
