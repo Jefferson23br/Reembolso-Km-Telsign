@@ -83,7 +83,36 @@
                         </form>
                     </div>
                     <div id="view-listar-despesas" class="view" style="display: none;"><h3>Despesas Registradas</h3><div id="despesas-list"></div></div>
-                    <div id="view-lancar-pagamento" class="view" style="display: none;"><h3>Lançar Pagamento de KM (Em breve)</h3></div>
+                        <div id="view-lancar-pagamento" class="view" style="display: none;">
+                            <h3>Lançar Pagamento de Reembolso</h3>
+                            <form id="pagamentoForm">
+                                <label>Viagens com Status "A Pagar":</label>
+                                <div id="viagens-a-pagar-list" style="max-height: 250px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 1rem; border-radius: 4px;">
+                                    <p>Nenhuma viagem a pagar encontrada.</p>
+                                </div>
+
+                                <h4>Resumo do Pagamento</h4>
+                                <p><strong>Total de Viagens Selecionadas:</strong> <span id="total-viagens-selecionadas">0</span></p>
+                                <p><strong>Valor Total a Pagar:</strong> R$ <span id="valor-total-a-pagar">0.00</span></p>
+                                <hr>
+
+                                <label for="pagamento-data">Data do Pagamento</label>
+                                <input type="date" id="pagamento-data" required>
+
+                                <label for="pagamento-metodo">Método de Pagamento</label>
+                                <select id="pagamento-metodo" required>
+                                    <option value="">-- Selecione o Método --</option>
+                                    <option value="PIX">PIX</option>
+                                    <option value="Transferência Bancária">Transferência Bancária</option>
+                                    <option value="Dinheiro">Dinheiro</option>
+                                </select>
+
+                                <label for="pagamento-descricao">Descrição (Opcional)</label>
+                                <textarea id="pagamento-descricao" rows="3"></textarea>
+                                
+                                <button type="submit">Registrar Pagamento</button>
+                            </form>
+                        </div>
                     <div id="view-relatorios" class="view" style="display: none;"><h3>Relatórios (Em breve)</h3></div>
                 </main>
             </div>

@@ -9,6 +9,7 @@ const veiculoRoutes = require('./routes/veiculoRoutes');
 const viagemRoutes = require('./routes/viagemRoutes');
 const despesaRoutes = require('./routes/despesaRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const pagamentoRoutes = require('./routes/pagamentoRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,6 +28,7 @@ app.use('/api/veiculos', veiculoRoutes);
 app.use('/api/viagens', viagemRoutes);
 app.use('/api/despesas', despesaRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/pagamentos', pagamentoRoutes); 
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
