@@ -1,137 +1,63 @@
-Reembolso de Km - Telsign
-🚧 Atenção: Este é um projeto que estou desenvolvendo ativamente. Novas funcionalidades e melhorias serão adicionadas em breve! 🚧
+Meu Projeto Pessoal: ERP de Reembolso de Km 🚧
 
-📖 Sobre o Projeto
-Olá! Bem-vindo ao repositório do meu projeto Reembolso de Km - Telsign.
+Olá! Seja muito bem-vindo ao repositório de um projeto que me enche de orgulho. O que você vê aqui é o resultado de quatro dias intensos de desenvolvimento, onde transformei uma necessidade prática em uma solução web completa e funcional.
 
-Iniciei este projeto Full Stack para resolver um problema prático: a necessidade de um sistema simples e eficiente para gerenciar e controlar o reembolso de quilometragem de veículos alugados. A ideia é criar um pequeno ERP web onde eu possa me autenticar de forma segura e gerenciar todo o ciclo de vida dos veículos, desde o início do aluguel até o seu término.
+📖 A História por Trás do Projeto
+Tudo começou com um desafio do dia a dia: gerenciar de forma eficiente o reembolso de quilometragem de veículos alugados. Eu precisava de algo simples, seguro e que centralizasse todas as informações, desde o cadastro do veículo até o relatório final de despesas e pagamentos. Em vez de procurar uma ferramenta pronta, decidi construir a minha própria.
 
-O que começou como um projeto de estudo e desenvolvimento local, agora evoluiu para uma aplicação completa e funcional, com o backend rodando em uma VPS e o frontend integrado a um site.
+O que era para ser um pequeno sistema se tornou um verdadeiro ERP (Enterprise Resource Planning) Full Stack. Hoje, ele não está apenas no meu computador; o backend está rodando em uma VPS e o frontend está integrado e acessível online.
 
-Aqui você encontrará todo o código da API RESTful que construí com Node.js, e também da interface de usuário (frontend) que desenvolvi para interagir com os dados.
+[www.auctusconsultoria.com.br/](https://www.auctusconsultoria.com.br/Reembolso-Km/frontend/index.html)
 
-🚀 Acesso Online
-Fico feliz em compartilhar que a aplicação não está apenas no código, mas também no ar e funcionando! A arquitetura foi distribuída da seguinte forma:
+✨ O Que Construímos Juntos
+Ao longo desta jornada, desenvolvi um sistema robusto com um ciclo de vida completo para o gerenciamento de reembolsos. Estas são as funcionalidades que implementei:
 
-Frontend: A interface de usuário foi hospedada e pode ser acessada publicamente através do site:
+Módulo de Autenticação Segura
+Sistema completo de Registro e Login de usuários, com criptografia de senhas para garantir a segurança.
 
-www.auctusconsultoria.com.br
+Autenticação via JSON Web Tokens (JWT), protegendo todas as rotas e garantindo que cada usuário só acesse suas próprias informações.
 
-Backend (API): A API RESTful, que serve os dados e cuida da lógica de negócio, está rodando de forma segura em uma VPS dedicada.
+Gerenciamento Completo de Veículos, Viagens e Despesas
+CRUD de Veículos: Cadastro, listagem, edição e finalização de contratos de aluguel.
 
-✨ Funcionalidades Atuais
-Até o momento, implementei as seguintes funcionalidades principais:
+Lançamento de Viagens (KM): Registro detalhado de cada viagem, com cálculo automático do valor de reembolso baseado em uma taxa por KM.
 
-Autenticação Segura: Criei um sistema completo de Registro e Login de usuários, com senhas devidamente criptografadas e autenticação via JSON Web Tokens (JWT).
+Lançamento de Despesas: Permite registrar outros custos associados, como manutenção e combustível, com a opção de anexar comprovantes.
 
-Gerenciamento de Veículos:
+Módulo Financeiro Inteligente
+Lançamento de Pagamentos: Uma interface inteligente que lista apenas as viagens pendentes, permite a seleção múltipla (ou "Selecionar Todas") e atualiza o status de cada viagem para "Pago" após a confirmação.
 
-Cadastro de novos veículos alugados, informando placa, descrição e a data de início do aluguel.
+Dashboard com Indicadores Chave: A tela inicial apresenta um resumo dinâmico com filtros por mês e ano, mostrando:
 
-Listagem de todos os veículos que cadastrei para meu usuário.
+Total de KM rodado no período.
 
-Funcionalidade para registrar o fim de um aluguel, adicionando uma data de término.
+Valor total a receber.
 
-Segurança da API: Desenvolvi um middleware de autenticação para proteger as rotas, garantindo que apenas usuários logados possam gerenciar seus próprios veículos.
+Total de despesas lançadas.
 
-Organização do Banco de Dados: Optei por usar schemas no PostgreSQL para manter o banco bem organizado, separando os dados de autenticação (auth) dos dados da aplicação (app).
+Valor total que já foi reembolsado.
 
-🛠️ As Tecnologias que Escolhi
-Para construir este projeto, optei pelas seguintes tecnologias:
+Um alerta importante sobre pagamentos pendentes de meses anteriores.
 
-Backend (API)
-Node.js & Express.js: Para a construção da API e o gerenciamento das rotas.
+Relatórios Detalhados e Prontos para Impressão
+Geração de Relatórios por Período: Criei uma seção onde é possível filtrar todas as viagens por um intervalo de datas específico.
 
-PostgreSQL: Como meu banco de dados relacional.
+Visualização e Impressão: O relatório é exibido em uma tabela clara e organizada na tela e, com um clique, gera uma versão otimizada para impressão em formato paisagem, perfeita para ser anexada a documentos.
 
-Autenticação:
+🛠️ As Tecnologias que Usei
+Para dar vida a este projeto, escolhi uma stack tecnológica moderna e eficiente:
 
-jsonwebtoken (JWT) para a geração e verificação dos tokens.
+Backend: Node.js com Express.js para a API RESTful.
 
-bcryptjs para garantir a segurança das senhas.
+Banco de Dados: PostgreSQL, utilizando schemas para uma melhor organização dos dados.
 
-Outros: pg (driver do PostgreSQL), dotenv e cors.
+Frontend: HTML5, CSS3 e JavaScript puro (Vanilla JS), consumindo a API com a Fetch API.
 
-Frontend
-HTML5, CSS3 & JavaScript (Vanilla JS): Decidi manter o frontend simples e direto por enquanto, focando na lógica e na interação com a API usando a Fetch API.
+Hospedagem: O backend está em uma VPS e o frontend integrado a um site, tornando a aplicação acessível de qualquer lugar.
 
-VS Code Live Server: Para servir o frontend no meu ambiente de desenvolvimento.
+👨‍💻 Uma Jornada de Aprendizado
+Este projeto foi uma incrível experiência de desenvolvimento. Em apenas quatro dias, consegui planejar, executar e implantar uma solução completa que resolve um problema real. Fico muito feliz em compartilhar o resultado final aqui.
 
-🚀 Como Rodar o Projeto (Localmente)
-Para que você possa configurar e rodar este projeto em sua máquina, preparei os seguintes passos:
-
-Pré-requisitos
-Node.js (recomendo a versão LTS)
-
-PostgreSQL
-
-Instalação
-Clone o repositório:
-
-Bash
-
-git clone https://github.com/Jefferson23br/Reembolso-Km-Telsign.git
-cd Reembolso-Km-Telsign
-Configure o Backend:
-
-Bash
-
-cd backend
-npm install
-Configure o Banco de Dados:
-
-Você precisará criar um banco de dados e um usuário no seu PostgreSQL.
-
-Depois, execute os scripts SQL que utilizei para criar os schemas (auth, app) e as tabelas (usuarios, veiculos).
-
-Variáveis de Ambiente:
-
-Na pasta backend, crie um arquivo .env.
-
-Utilize o modelo abaixo para preencher com suas credenciais:
-
-Snippet de código
-
-PORT=3000
-DB_HOST=localhost
-DB_USER=seu_usuario_do_banco
-DB_PASSWORD=sua_senha_do_banco
-DB_NAME=reembolso_km_telsign
-JWT_SECRET=SUA_CHAVE_SECRETA_E_LONGA_A_QUI
-Executando a Aplicação
-Inicie o Backend (Terminal 1):
-
-Bash
-
-# Dentro da pasta /backend
-npm run dev
-Inicie o Frontend (VS Code):
-
-Com a extensão Live Server instalada, clique com o botão direito no arquivo frontend/index.html e selecione "Open with Live Server".
-
-🗺️ Endpoints da API (Versão Atual)
-POST /api/auth/register
-
-POST /api/auth/login
-
-GET /api/veiculos (Protegido)
-
-POST /api/veiculos (Protegido)
-
-PATCH /api/veiculos/:id/finalizar (Protegido)
-
-🔮 Próximos Passos
-Como o projeto está em desenvolvimento, meus próximos objetivos são:
-
-[ ] Implementar o CRUD completo para Viagens.
-
-[ ] Vincular viagens a um veículo e calcular o valor do reembolso.
-
-[ ] Criar um módulo de Pagamentos para fechar os ciclos semanais.
-
-[ ] Melhorar a interface e a experiência do usuário.
-
-👨‍💻 Autor
-Olá! Eu sou Jefferson Lima, o desenvolvedor por trás deste projeto.
+Jefferson Lima
 
 GitHub: @Jefferson23br
