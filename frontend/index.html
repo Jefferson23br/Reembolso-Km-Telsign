@@ -155,7 +155,24 @@
                                 <button type="submit">Registrar Pagamento</button>
                             </form>
                         </div>
-                    <div id="view-relatorios" class="view" style="display: none;"><h3>Relatórios (Em breve)</h3></div>
+                    <div id="view-relatorios" class="view" style="display: none;">
+                        <h3>Relatório de Viagens</h3>
+                        <div class="report-filters">
+                            <div class="filter-group">
+                                <label for="report-data-inicio">Data Início</label>
+                                <input type="date" id="report-data-inicio">
+                            </div>
+                            <div class="filter-group">
+                                <label for="report-data-fim">Data Fim</label>
+                                <input type="date" id="report-data-fim">
+                            </div>
+                            <button id="gerar-relatorio-btn">Gerar Relatório</button>
+                            <button id="imprimir-relatorio-btn" style="display: none;">Imprimir</button>
+                        </div>
+                        <div id="report-content" class="report-container">
+                            <p>Selecione um período e clique em "Gerar Relatório".</p>
+                        </div>
+                    </div>
                 </main>
             </div>
         </div>

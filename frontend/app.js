@@ -58,6 +58,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const valorTotalSpan = document.getElementById('valor-total-a-pagar');
     const selecionarTodasCheckbox = document.getElementById('selecionar-todas');
 
+    const gerarRelatorioBtn = document.getElementById('gerar-relatorio-btn');
+    const imprimirRelatorioBtn = document.getElementById('imprimir-relatorio-btn');
+    const reportContent = document.getElementById('report-content');
+    const reportDataInicio = document.getElementById('report-data-inicio');
+    const reportDataFim = document.getElementById('report-data-fim');
+
     const API_URL = 'https://api.auctusconsultoria.com.br';
     const CONFIG = { appName: "Reembolso de Km" };
 
@@ -643,6 +649,101 @@ function initializeDashboardFilters() {
 
     applyFilterBtn.addEventListener('click', fetchDashboardSummary);
 }
+
+        gerarRelatorioBtn.addEventListener('click', async () => {
+        const dataInicio = reportDataInicio.value;
+        const dataFim = reportDataFim.value;
+
+        if (!dataInicio || !dataFim) {
+            reportContent.innerHTML = `<p style="color: red;">Por favor, selecione as datas de início e fim.</p>`;
+            return;
+        }
+
+        const token = localStorage.getItem('token');
+        reportContent.innerHTML = `<p>Gerando relatório...</p>`;
+
+        try {
+            const response = await fetch(`${API_URL}/api/relatorios/viagens?data_inicio=${dataInicio}&data_fim=${dataFim}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.message);
+            }
+
+            const dados = await response.json();
+
+            if (dados.length === 0) {
+                reportContent.innerHTML = '<p>Nenhuma viagem encontrada para o período selecionado.</p>';
+                imprimirRelatorioBtn.style.display = 'none';
+                return;
+            }
+
+            let totalKm = 0;
+            let totalReembolso = 0;
+            let totalReembolsado = 0;
+
+            let tableRows = '';
+            dados.forEach(d => {
+                totalKm += parseFloat(d.distancia_percorrida);
+                totalReembolso += parseFloat(d.valor_reembolso);
+                totalReembolsado += parseFloat(d.valor_reembolsado);
+
+                tableRows += `
+                    <tr>
+                        <td>${new Date(d.data_viagem).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</td>
+                        <td>${d.local_saida || 'N/A'}</td>
+                        <td>${d.local_chegada || 'N/A'}</td>
+                        <td>${parseFloat(d.distancia_percorrida).toFixed(2)}</td>
+                        <td>R$ ${parseFloat(d.valor_reembolso).toFixed(2)}</td>
+                        <td>R$ ${parseFloat(d.valor_reembolsado).toFixed(2)}</td>
+                        <td>${d.data_reembolso ? new Date(d.data_reembolso).toLocaleDateString('pt-BR', { timeZone: 'UTC' }) : '--'}</td>
+                        <td>${d.status_pagamento}</td>
+                    </tr>
+                `;
+            });
+
+            reportContent.innerHTML = `
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Saída</th>
+                            <th>Chegada</th>
+                            <th>KM Rodado</th>
+                            <th>Vl. Reembolso</th>
+                            <th>Vl. Reembolsado</th>
+                            <th>Dt. Reembolso</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3">TOTAIS</td>
+                            <td>${totalKm.toFixed(2)}</td>
+                            <td>R$ ${totalReembolso.toFixed(2)}</td>
+                            <td>R$ ${totalReembolsado.toFixed(2)}</td>
+                            <td colspan="2"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            `;
+
+            imprimirRelatorioBtn.style.display = 'inline-block';
+
+        } catch (error) {
+            reportContent.innerHTML = `<p style="color: red;">Erro ao gerar relatório: ${error.message}</p>`;
+            imprimirRelatorioBtn.style.display = 'none';
+        }
+    });
+
+    imprimirRelatorioBtn.addEventListener('click', () => {
+        window.print();
+    });
 
 
 initializeDashboardFilters();
