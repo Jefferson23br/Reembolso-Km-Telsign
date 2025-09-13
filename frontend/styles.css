@@ -142,9 +142,6 @@ hr { border: 0; border-top: 1px solid #eee; margin: 2rem 0; }
     color: white;
 }
 
-
-
-
 .dashboard-summary {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -178,7 +175,6 @@ hr { border: 0; border-top: 1px solid #eee; margin: 2rem 0; }
     border: 1px solid #ffeeba;
     color: #856404;
 }
-/* styles.css - Adicionar ao final */
 
 .dashboard-filters {
     display: flex;
@@ -218,4 +214,7 @@ hr { border: 0; border-top: 1px solid #eee; margin: 2rem 0; }
 .filter-controls button {
     padding: 8px 15px;
     margin-bottom: 0;
+}
+.summary-card.card-pago {
+    border-left-color: #28a745;
 }

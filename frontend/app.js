@@ -583,16 +583,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // app.js - Substitua a função fetchDashboardSummary
+
 
 const fetchDashboardSummary = async () => {
     const token = localStorage.getItem('token');
     
-    // Pega os valores dos filtros
+
     const mes = document.getElementById('filter-month').value;
     const ano = document.getElementById('filter-year').value;
 
-    // Constrói a URL da API com os parâmetros de filtro
+
     const apiUrlWithFilters = `${API_URL}/api/dashboard/summary?mes=${mes}&ano=${ano}`;
 
     try {
@@ -620,9 +620,6 @@ const fetchDashboardSummary = async () => {
     }
 };
 
-// --- Adicione este novo bloco de código DENTRO do 'DOMContentLoaded' ---
-// (Pode ser antes da seção de inicialização no final do arquivo)
-
 function initializeDashboardFilters() {
     const monthSelect = document.getElementById('filter-month');
     const yearInput = document.getElementById('filter-year');
@@ -630,24 +627,24 @@ function initializeDashboardFilters() {
 
     const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     
-    // Popula o select de meses
+
     meses.forEach((mes, index) => {
         const option = document.createElement('option');
-        option.value = index + 1; // 1 para Janeiro, 2 para Fevereiro, etc.
+        option.value = index + 1;
         option.textContent = mes;
         monthSelect.appendChild(option);
     });
 
-    // Define os valores padrão para o mês e ano atuais
+
     const hoje = new Date();
     monthSelect.value = hoje.getMonth() + 1;
     yearInput.value = hoje.getFullYear();
 
-    // Adiciona o listener para o botão
+
     applyFilterBtn.addEventListener('click', fetchDashboardSummary);
 }
 
-// Chame esta função na inicialização
+
 initializeDashboardFilters();
     
     pageTitle.textContent = CONFIG.appName;

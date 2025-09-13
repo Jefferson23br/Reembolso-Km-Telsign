@@ -43,39 +43,42 @@
                     <button data-view="view-relatorios">Relatórios</button>
                 </nav>
                 <main id="dashboard-content" class="dashboard-content">
-<div id="view-home" class="view">
-    <div class="dashboard-filters">
-        <h3>Resumo Mensal</h3>
-        <div class="filter-controls">
-            <div class="filter-group">
-                <label for="filter-month">Mês</label>
-                <select id="filter-month"></select>
-            </div>
-            <div class="filter-group">
-                <label for="filter-year">Ano</label>
-                <input type="number" id="filter-year" placeholder="Ex: 2025">
-            </div>
-            <button id="apply-filter-btn">Aplicar Filtro</button>
-        </div>
-    </div>
-    <div class="dashboard-summary">
-        <div class="summary-card">
-            <h4>KM Rodado no Mês</h4>
-            <p id="card-km-mes">--</p>
-        </div>
-        <div class="summary-card">
-            <h4>A Receber (Reembolso)</h4>
-            <p id="card-receber-mes">--</p>
-        </div>
-        <div class="summary-card">
-            <h4>Total Despesas no Mês</h4>
-            <p id="card-despesas-mes">--</p>
-        </div>
-    </div>
-    <div id="card-alerta-atrasados" class="summary-alert" style="display: none;">
-        <!-- Alerta será inserido aqui -->
-    </div>
-</div>
+                <div id="view-home" class="view">
+                    <div class="dashboard-filters">
+                        <h3>Resumo Mensal</h3>
+                        <div class="filter-controls">
+                            <div class="filter-group">
+                                <label for="filter-month">Mês</label>
+                                <select id="filter-month"></select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="filter-year">Ano</label>
+                                <input type="number" id="filter-year" placeholder="Ex: 2025">
+                            </div>
+                            <button id="apply-filter-btn">Aplicar Filtro</button>
+                        </div>
+                    </div>
+                    <div class="dashboard-summary">
+                        <div class="summary-card">
+                            <h4>KM Rodado no Mês</h4>
+                            <p id="card-km-mes">--</p>
+                        </div>
+                        <div class="summary-card">
+                            <h4>A Receber (Reembolso)</h4>
+                            <p id="card-receber-mes">--</p>
+                        </div>
+                        <div class="summary-card">
+                            <h4>Total Despesas no Mês</h4>
+                            <p id="card-despesas-mes">--</p>
+                        </div>
+                        <div class="summary-card card-pago">
+                            <h4>Total Reembolsado no Mês</h4>
+                            <p id="card-reembolsado-mes">--</p>
+                        </div>
+                    </div>
+                    <div id="card-alerta-atrasados" class="summary-alert" style="display: none;">
+                    </div>
+                </div>
 
                     <div id="view-cadastrar-veiculo" class="view" style="display: none;">
                         <h3>Cadastrar Novo Veículo Alugado</h3>
