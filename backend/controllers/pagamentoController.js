@@ -1,10 +1,6 @@
-// backend/controllers/pagamentoController.js
-
 const db = require('../config/db');
 
-// @desc    Buscar todas as viagens com status "A Pagar" do usuário logado
-// @route   GET /api/pagamentos/apagar
-// @access  Private
+
 exports.getViagensAPagar = async (req, res) => {
     const usuario_id = req.user.id;
     try {
@@ -23,9 +19,6 @@ exports.getViagensAPagar = async (req, res) => {
     }
 };
 
-// @desc    Criar um novo registro de pagamento
-// @route   POST /api/pagamentos
-// @access  Private
 exports.criarPagamento = async (req, res) => {
     const { viagens_ids, data_pagamento, metodo_pagamento, valor_total, descricao } = req.body;
     const usuario_id = req.user.id;
