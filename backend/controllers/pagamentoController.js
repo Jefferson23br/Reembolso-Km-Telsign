@@ -1,5 +1,10 @@
+// backend/controllers/pagamentoController.js
+
 const db = require('../config/db');
 
+// @desc    Buscar todas as viagens com status "A Pagar" do usuário logado
+// @route   GET /api/pagamentos/apagar
+// @access  Private
 exports.getViagensAPagar = async (req, res) => {
     const usuario_id = req.user.id;
     try {
@@ -7,7 +12,7 @@ exports.getViagensAPagar = async (req, res) => {
             SELECT v.id, v.data_viagem, v.descricao, v.valor_reembolso, veic.placa
             FROM app.viagens v
             JOIN app.veiculos veic ON v.veiculo_id = veic.id
-            WHERE v.usuario_id = $1 AND v.status_pagamento = 'A PAGAR' -- CORREÇÃO: De 'A Pagar' para 'A PAGAR'
+            WHERE v.usuario_id = $1 AND v.status_pagamento = 'A Pagar' -- CORRIGIDO DE VOLTA PARA 'A Pagar'
             ORDER BY v.data_viagem ASC
         `;
         const result = await db.query(queryText, [usuario_id]);
@@ -18,6 +23,9 @@ exports.getViagensAPagar = async (req, res) => {
     }
 };
 
+// @desc    Criar um novo registro de pagamento
+// @route   POST /api/pagamentos
+// @access  Private
 exports.criarPagamento = async (req, res) => {
     const { viagens_ids, data_pagamento, metodo_pagamento, valor_total, descricao } = req.body;
     const usuario_id = req.user.id;
