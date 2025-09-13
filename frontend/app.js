@@ -28,18 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginTitle = document.getElementById('login-title');
     const dashboardTitle = document.getElementById('dashboard-title');
     
-
     const veiculoForm = document.getElementById('veiculoForm');
     const veiculosList = document.getElementById('veiculos-list');
     const editModal = document.getElementById('edit-veiculo-modal');
     const editForm = document.getElementById('editVeiculoForm');
     const cancelEditBtn = document.getElementById('cancel-edit-btn');
     
-
     const viagemForm = document.getElementById('viagemForm');
     const viagemVeiculoSelect = document.getElementById('viagem-veiculo-select');
     const viagensList = document.getElementById('viagens-list');
-
 
     const despesaForm = document.getElementById('despesaForm');
     const despesasasList = document.getElementById('despesas-list');
@@ -54,6 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const viagensAPagarList = document.getElementById('viagens-a-pagar-list');
     const totalViagensSpan = document.getElementById('total-viagens-selecionadas');
     const valorTotalSpan = document.getElementById('valor-total-a-pagar');
+    
+    const selecionarTodasCheckbox = document.getElementById('selecionar-todas');
 
     const API_URL = 'https://api.auctusconsultoria.com.br';
     const CONFIG = { appName: "Reembolso de Km" };
@@ -76,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const showLogin = () => { mainContainer.classList.add('container-login'); mainContainer.classList.remove('container-app'); loginArea.style.display = 'block'; dashboardArea.style.display = 'none'; };
     const showDashboard = () => { mainContainer.classList.remove('container-login'); mainContainer.classList.add('container-app'); loginArea.style.display = 'none'; dashboardArea.style.display = 'block'; showView('view-home'); };
+    
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const emailInput = document.getElementById('email');
@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
             messageArea.className = 'message error';
         }
     });
+
     logoutButton.addEventListener('click', () => { localStorage.removeItem('token'); messageArea.textContent = 'Você saiu com sucesso.'; messageArea.className = 'message success'; showLogin(); });
     
     const populateVeiculoSelect = async (selectElement) => {
@@ -142,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
             messageArea.className = 'message error';
         }
     };
+
     veiculoForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const token = localStorage.getItem('token');
@@ -167,6 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             messageArea.className = 'message error';
         }
     });
+
     veiculosList.addEventListener('click', async (event) => {
         if (event.target.classList.contains('edit-btn')) {
             const veiculoId = event.target.dataset.id;
@@ -184,6 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
     editForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const token = localStorage.getItem('token');
@@ -211,6 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
             messageArea.className = 'message error';
         }
     });
+
     cancelEditBtn.addEventListener('click', () => { editModal.style.display = 'none'; });
 
     viagemForm.addEventListener('submit', async (event) => {
@@ -241,6 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
             messageArea.className = 'message error';
         }
     });
+
     const fetchViagens = async () => {
         const token = localStorage.getItem('token');
         if (!token) { showLogin(); return; }
@@ -444,104 +450,118 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-            
-        const fetchViagensAPagar = async () => {
-            const token = localStorage.getItem('token');
-            try {
-                
-                const response = await fetch(`${API_URL}/api/pagamentos/apagar`, { 
-                    headers: { 'Authorization': `Bearer ${token}` } 
-                });
-                if (!response.ok) throw new Error('Falha ao buscar viagens a pagar.');
-                
-                const viagens = await response.json();
-                viagensAPagarList.innerHTML = ''; 
-
-                if (viagens.length === 0) {
-                    viagensAPagarList.innerHTML = '<p>Nenhuma viagem a pagar encontrada.</p>';
-                    return;
-                }
-
-                viagens.forEach(v => {
-                    const dataViagem = new Date(v.data_viagem).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'viagem-a-pagar-item';
-                    itemDiv.innerHTML = `
-                        <input type="checkbox" id="viagem-${v.id}" name="viagem" value="${v.id}" data-valor="${v.valor_reembolso}">
-                        <label for="viagem-${v.id}">
-                            ${dataViagem} - ${v.placa} (${v.descricao}) - <strong>R$ ${Number(v.valor_reembolso).toFixed(2)}</strong>
-                        </label>
-                    `;
-                    viagensAPagarList.appendChild(itemDiv);
-                });
-
-            } catch (error) {
-                messageArea.textContent = `Erro: ${error.message}`;
-                messageArea.className = 'message error';
-                viagensAPagarList.innerHTML = `<p style="color: red;">${error.message}</p>`;
-            }
-        };
-
-        
-        const atualizarResumoPagamento = () => {
-            const checkboxes = document.querySelectorAll('#viagens-a-pagar-list input[type="checkbox"]:checked');
-            let totalViagens = 0;
-            let valorTotal = 0;
-
-            checkboxes.forEach(cb => {
-                totalViagens++;
-                valorTotal += parseFloat(cb.dataset.valor);
+    const fetchViagensAPagar = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            selecionarTodasCheckbox.checked = false;
+            const response = await fetch(`${API_URL}/api/pagamentos/apagar`, { 
+                headers: { 'Authorization': `Bearer ${token}` } 
             });
+            if (!response.ok) throw new Error('Falha ao buscar viagens a pagar.');
+            
+            const viagens = await response.json();
+            viagensAPagarList.innerHTML = '';
 
-            totalViagensSpan.textContent = totalViagens;
-            valorTotalSpan.textContent = valorTotal.toFixed(2);
-        };
-
-        
-        viagensAPagarList.addEventListener('change', atualizarResumoPagamento);
-
-       
-        pagamentoForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const token = localStorage.getItem('token');
-            const selectedViagensIds = Array.from(document.querySelectorAll('#viagens-a-pagar-list input:checked')).map(cb => cb.value);
-
-            if (selectedViagensIds.length === 0) {
-                messageArea.textContent = 'Erro: Selecione ao menos uma viagem para pagar.';
-                messageArea.className = 'message error';
+            if (viagens.length === 0) {
+                viagensAPagarList.innerHTML = '<p style="padding: 10px;">Nenhuma viagem a pagar encontrada.</p>';
                 return;
             }
 
-            const pagamentoData = {
-                viagens_ids: selectedViagensIds,
-                data_pagamento: document.getElementById('pagamento-data').value,
-                metodo_pagamento: document.getElementById('pagamento-metodo').value,
-                valor_total: parseFloat(valorTotalSpan.textContent),
-                descricao: document.getElementById('pagamento-descricao').value,
-            };
+            viagens.forEach(v => {
+                const dataViagem = new Date(v.data_viagem).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'viagem-pagamento-item';
+                itemDiv.innerHTML = `
+                    <input type="checkbox" class="viagem-checkbox" id="viagem-${v.id}" value="${v.id}" data-valor="${v.valor_reembolso}">
+                    <div class="viagem-pagamento-info">
+                        <span class="info-header">${dataViagem} <small>- ${v.placa}</small></span>
+                        <span class="info-desc">${v.descricao || 'Sem descrição'}</span>
+                    </div>
+                    <strong class="viagem-pagamento-valor">R$ ${Number(v.valor_reembolso).toFixed(2)}</strong>
+                `;
+                viagensAPagarList.appendChild(itemDiv);
+            });
 
-            try {
-               
-                const response = await fetch(`${API_URL}/api/pagamentos`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                    body: JSON.stringify(pagamentoData)
-                });
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.message);
+        } catch (error) {
+            messageArea.textContent = `Erro: ${error.message}`;
+            messageArea.className = 'message error';
+            viagensAPagarList.innerHTML = `<p style="padding: 10px; color: red;">${error.message}</p>`;
+        }
+    };
 
-                messageArea.textContent = 'Pagamento registrado com sucesso!';
-                messageArea.className = 'message success';
-                pagamentoForm.reset();
-                atualizarResumoPagamento();
-                fetchViagensAPagar(); 
-                showView('view-listar-viagens'); 
+    const atualizarResumoPagamento = () => {
+        const checkboxes = document.querySelectorAll('.viagem-checkbox');
+        const checkedCheckboxes = document.querySelectorAll('.viagem-checkbox:checked');
+        
+        let totalViagens = 0;
+        let valorTotal = 0;
 
-            } catch (error) {
-                messageArea.textContent = `Erro: ${error.message}`;
-                messageArea.className = 'message error';
-            }
+        checkedCheckboxes.forEach(cb => {
+            totalViagens++;
+            valorTotal += parseFloat(cb.dataset.valor);
         });
+
+        totalViagensSpan.textContent = totalViagens;
+        valorTotalSpan.textContent = valorTotal.toFixed(2);
+        
+        if (checkboxes.length > 0 && checkboxes.length === checkedCheckboxes.length) {
+            selecionarTodasCheckbox.checked = true;
+        } else {
+            selecionarTodasCheckbox.checked = false;
+        }
+    };
+    
+    viagensAPagarList.addEventListener('change', atualizarResumoPagamento);
+
+    selecionarTodasCheckbox.addEventListener('change', (event) => {
+        const isChecked = event.target.checked;
+        const checkboxes = document.querySelectorAll('.viagem-checkbox');
+        checkboxes.forEach(cb => {
+            cb.checked = isChecked;
+        });
+        atualizarResumoPagamento();
+    });
+
+    pagamentoForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const token = localStorage.getItem('token');
+        const selectedViagensIds = Array.from(document.querySelectorAll('.viagem-checkbox:checked')).map(cb => cb.value);
+
+        if (selectedViagensIds.length === 0) {
+            messageArea.textContent = 'Erro: Selecione ao menos uma viagem para pagar.';
+            messageArea.className = 'message error';
+            return;
+        }
+
+        const pagamentoData = {
+            viagens_ids: selectedViagensIds,
+            data_pagamento: document.getElementById('pagamento-data').value,
+            metodo_pagamento: document.getElementById('metodo-pagamento').value,
+            valor_total: parseFloat(valorTotalSpan.textContent),
+            descricao: document.getElementById('pagamento-descricao').value,
+        };
+
+        try {
+            const response = await fetch(`${API_URL}/api/pagamentos`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(pagamentoData)
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message);
+
+            messageArea.textContent = 'Pagamento registrado com sucesso!';
+            messageArea.className = 'message success';
+            pagamentoForm.reset();
+            atualizarResumoPagamento();
+            fetchViagensAPagar();
+            showView('view-listar-viagens');
+
+        } catch (error) {
+            messageArea.textContent = `Erro: ${error.message}`;
+            messageArea.className = 'message error';
+        }
+    });
 
     cancelEditDespesaBtn.addEventListener('click', () => { editDespesaModal.style.display = 'none'; });
 

@@ -87,8 +87,14 @@
                             <h3>Lançar Pagamento de Reembolso</h3>
                             <form id="pagamentoForm">
                                 <label>Viagens com Status "A Pagar":</label>
-                                <div id="viagens-a-pagar-list" style="max-height: 250px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 1rem; border-radius: 4px;">
-                                    <p>Nenhuma viagem a pagar encontrada.</p>
+                                <div id="viagens-a-pagar-container" style="border: 1px solid #ccc; border-radius: 4px; margin-bottom: 1rem;">
+                                    <div class="select-all-container">
+                                        <input type="checkbox" id="selecionar-todas">
+                                        <label for="selecionar-todas">Selecionar Todas</label>
+                                    </div>
+                                    <div id="viagens-a-pagar-list" style="max-height: 250px; overflow-y: auto;">
+                                        <p style="padding: 10px;">Buscando viagens...</p>
+                                    </div>
                                 </div>
 
                                 <h4>Resumo do Pagamento</h4>

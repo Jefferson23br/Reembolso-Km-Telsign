@@ -61,3 +61,74 @@ hr { border: 0; border-top: 1px solid #eee; margin: 2rem 0; }
     .despesa-valor { text-align: left; margin-left: 0; margin-top: 10px; }
     .despesa-actions { margin-top: 10px; }
 }
+/* styles.css - Adicionar ao final do arquivo */
+
+/* Estilos para a opção "Selecionar Todas" */
+.select-all-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 10px 10px 10px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+}
+.select-all-container label {
+    margin-bottom: 0;
+    font-weight: 600;
+}
+.select-all-container input[type="checkbox"] {
+    width: auto;
+    margin-bottom: 0;
+}
+
+/* Novo item da lista de pagamento */
+.viagem-pagamento-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 8px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
+}
+.viagem-pagamento-item:last-child {
+    border-bottom: none;
+}
+.viagem-pagamento-item:hover {
+    background-color: #f8f9fa;
+}
+
+.viagem-pagamento-item input[type="checkbox"] {
+    width: auto;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.viagem-pagamento-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.viagem-pagamento-info .info-header {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.viagem-pagamento-info .info-header small {
+    font-weight: 400;
+    color: #666;
+}
+
+.viagem-pagamento-info .info-desc {
+    font-size: 0.85rem;
+    color: #777;
+}
+
+.viagem-pagamento-valor {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0056b3;
+    padding-left: 15px;
+    flex-shrink: 0;
+}
