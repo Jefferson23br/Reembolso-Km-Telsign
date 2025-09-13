@@ -43,7 +43,26 @@
                     <button data-view="view-relatorios">Relatórios</button>
                 </nav>
                 <main id="dashboard-content" class="dashboard-content">
-                    <div id="view-home" class="view"><h3>Bem-vindo!</h3><p>Selecione uma opção no menu para começar.</p></div>
+                    <div id="view-home" class="view">
+                        <h3>Resumo Mensal</h3>
+                        <div class="dashboard-summary">
+                            <div class="summary-card">
+                                <h4>KM Rodado no Mês</h4>
+                                <p id="card-km-mes">--</p>
+                            </div>
+                            <div class="summary-card">
+                                <h4>A Receber (Reembolso)</h4>
+                                <p id="card-receber-mes">--</p>
+                            </div>
+                            <div class="summary-card">
+                                <h4>Total Despesas no Mês</h4>
+                                <p id="card-despesas-mes">--</p>
+                            </div>
+                        </div>
+                        <div id="card-alerta-atrasados" class="summary-alert" style="display: none;">
+                            </div>
+                    </div>
+
                     <div id="view-cadastrar-veiculo" class="view" style="display: none;">
                         <h3>Cadastrar Novo Veículo Alugado</h3>
                         <form id="veiculoForm">

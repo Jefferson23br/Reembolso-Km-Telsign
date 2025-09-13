@@ -16,6 +16,7 @@ function initMap() {
 
 document.addEventListener('DOMContentLoaded', () => {
 
+
     const mainContainer = document.getElementById('main-container');
     const loginArea = document.getElementById('login-area');
     const dashboardArea = document.getElementById('dashboard-area');
@@ -28,15 +29,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginTitle = document.getElementById('login-title');
     const dashboardTitle = document.getElementById('dashboard-title');
     
+
     const veiculoForm = document.getElementById('veiculoForm');
     const veiculosList = document.getElementById('veiculos-list');
     const editModal = document.getElementById('edit-veiculo-modal');
     const editForm = document.getElementById('editVeiculoForm');
     const cancelEditBtn = document.getElementById('cancel-edit-btn');
     
+
     const viagemForm = document.getElementById('viagemForm');
     const viagemVeiculoSelect = document.getElementById('viagem-veiculo-select');
     const viagensList = document.getElementById('viagens-list');
+
 
     const despesaForm = document.getElementById('despesaForm');
     const despesasasList = document.getElementById('despesas-list');
@@ -47,15 +51,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const editDespesaForm = document.getElementById('editDespesaForm');
     const cancelEditDespesaBtn = document.getElementById('cancel-edit-despesa-btn');
 
+
     const pagamentoForm = document.getElementById('pagamentoForm');
     const viagensAPagarList = document.getElementById('viagens-a-pagar-list');
     const totalViagensSpan = document.getElementById('total-viagens-selecionadas');
     const valorTotalSpan = document.getElementById('valor-total-a-pagar');
-    
     const selecionarTodasCheckbox = document.getElementById('selecionar-todas');
 
     const API_URL = 'https://api.auctusconsultoria.com.br';
     const CONFIG = { appName: "Reembolso de Km" };
+
 
     const showView = (viewId) => {
         views.forEach(view => view.style.display = 'none');
@@ -63,6 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (viewToShow) { viewToShow.style.display = 'block'; }
         menuButtons.forEach(button => button.classList.toggle('active', button.dataset.view === viewId));
         
+
+        if (viewId === 'view-home') fetchDashboardSummary();
         if (viewId === 'view-listar-veiculo') fetchVeiculos();
         if (viewId === 'view-lancar-km') populateVeiculoSelect(viagemVeiculoSelect);
         if (viewId === 'view-listar-viagens') fetchViagens();
@@ -76,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const showLogin = () => { mainContainer.classList.add('container-login'); mainContainer.classList.remove('container-app'); loginArea.style.display = 'block'; dashboardArea.style.display = 'none'; };
     const showDashboard = () => { mainContainer.classList.remove('container-login'); mainContainer.classList.add('container-app'); loginArea.style.display = 'none'; dashboardArea.style.display = 'block'; showView('view-home'); };
     
+
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const emailInput = document.getElementById('email');
@@ -99,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     logoutButton.addEventListener('click', () => { localStorage.removeItem('token'); messageArea.textContent = 'Você saiu com sucesso.'; messageArea.className = 'message success'; showLogin(); });
     
+
     const populateVeiculoSelect = async (selectElement) => {
         const token = localStorage.getItem('token');
         try {
@@ -117,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
+
     const fetchVeiculos = async () => {
         const token = localStorage.getItem('token');
         if (!token) { showLogin(); return; }
@@ -218,6 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cancelEditBtn.addEventListener('click', () => { editModal.style.display = 'none'; });
 
+
     viagemForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const token = localStorage.getItem('token');
@@ -261,11 +272,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 viagens.forEach(v => {
                     const viagemDiv = document.createElement('div');
                     viagemDiv.className = 'viagem-item';
+
                     const dataViagem = new Date(v.data_viagem).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
                     let statusClass = '';
                     switch (v.status_pagamento) {
                         case 'A Pagar': statusClass = 'status-apagar'; break;
-                        case 'Pago': statusClass = 'status-pago'; break;
+                        case 'Pago': 
+                            statusClass = 'status-pago'; 
+                            viagemDiv.classList.add('pago');
+                            break;
                         case 'Pago Parcial': statusClass = 'status-pago-parcial'; break;
                         default: statusClass = '';
                     }
@@ -287,6 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
+
     despesaComprovanteFile.addEventListener('change', async (event) => {
         const file = event.target.files[0];
         if (!file) return;
@@ -450,6 +466,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    cancelEditDespesaBtn.addEventListener('click', () => { editDespesaModal.style.display = 'none'; });
+
+
     const fetchViagensAPagar = async () => {
         const token = localStorage.getItem('token');
         try {
@@ -563,8 +582,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    cancelEditDespesaBtn.addEventListener('click', () => { editDespesaModal.style.display = 'none'; });
 
+    const fetchDashboardSummary = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`${API_URL}/api/dashboard/summary`, { 
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!response.ok) throw new Error('Falha ao carregar o resumo.');
+            
+            const summary = await response.json();
+
+            document.getElementById('card-km-mes').textContent = `${summary.totalKmMes.toFixed(1)} km`;
+            document.getElementById('card-receber-mes').textContent = `R$ ${summary.totalAReceberMes.toFixed(2)}`;
+            document.getElementById('card-despesas-mes').textContent = `R$ ${summary.totalDespesasMes.toFixed(2)}`;
+
+            const alertaDiv = document.getElementById('card-alerta-atrasados');
+            if (summary.pendentesMesesAnteriores > 0) {
+                alertaDiv.textContent = `Atenção: Você possui ${summary.pendentesMesesAnteriores} viagem(s) de meses anteriores com pagamento pendente.`;
+                alertaDiv.style.display = 'block';
+            } else {
+                alertaDiv.style.display = 'none';
+            }
+
+        } catch (error) {
+            document.getElementById('view-home').innerHTML = `<p style="color: red;">${error.message}</p>`;
+        }
+    };
+    
     pageTitle.textContent = CONFIG.appName;
     loginTitle.textContent = CONFIG.appName;
     dashboardTitle.textContent = `Painel ${CONFIG.appName}`;

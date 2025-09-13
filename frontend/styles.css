@@ -61,9 +61,7 @@ hr { border: 0; border-top: 1px solid #eee; margin: 2rem 0; }
     .despesa-valor { text-align: left; margin-left: 0; margin-top: 10px; }
     .despesa-actions { margin-top: 10px; }
 }
-/* styles.css - Adicionar ao final do arquivo */
 
-/* Estilos para a opção "Selecionar Todas" */
 .select-all-container {
     display: flex;
     align-items: center;
@@ -81,7 +79,7 @@ hr { border: 0; border-top: 1px solid #eee; margin: 2rem 0; }
     margin-bottom: 0;
 }
 
-/* Novo item da lista de pagamento */
+
 .viagem-pagamento-item {
     display: flex;
     justify-content: space-between;
@@ -131,4 +129,52 @@ hr { border: 0; border-top: 1px solid #eee; margin: 2rem 0; }
     color: #0056b3;
     padding-left: 15px;
     flex-shrink: 0;
+}
+
+
+.viagem-item.pago {
+    background-color: #f0fff0; 
+    border-left-color: #28a745; 
+}
+
+.status-badge.status-pago {
+    background-color: #28a745;
+    color: white;
+}
+
+
+
+
+.dashboard-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+.summary-card {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 5px solid #007bff;
+    text-align: center;
+}
+.summary-card h4 {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    color: #555;
+}
+.summary-card p {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333;
+}
+.summary-alert {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
 }
