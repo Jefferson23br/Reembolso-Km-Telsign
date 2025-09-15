@@ -18,17 +18,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     const mainContainer = document.getElementById('main-container');
-    const loginArea = document.getElementById('login-area');
     const dashboardArea = document.getElementById('dashboard-area');
-    const loginForm = document.getElementById('loginForm');
-    const logoutButton = document.getElementById('logoutButton');
     const messageArea = document.getElementById('message-area');
     const menuButtons = document.querySelectorAll('.dashboard-menu button');
     const views = document.querySelectorAll('.view');
     const pageTitle = document.getElementById('page-title');
-    const loginTitle = document.getElementById('login-title');
     const dashboardTitle = document.getElementById('dashboard-title');
     
+
+    const loginArea = document.getElementById('login-area');
+    const registerArea = document.getElementById('register-area');
+    const forgotPasswordArea = document.getElementById('forgot-password-area');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+    const logoutButton = document.getElementById('logoutButton');
+    const loginTitle = document.getElementById('login-title');
+    const showRegisterLink = document.getElementById('showRegister');
+    const showForgotPasswordLink = document.getElementById('showForgotPassword');
+    const showLoginFromRegisterLink = document.getElementById('showLoginFromRegister');
+    const showLoginFromForgotLink = document.getElementById('showLoginFromForgot');
+
 
     const veiculoForm = document.getElementById('veiculoForm');
     const veiculosList = document.getElementById('veiculos-list');
@@ -36,11 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const editForm = document.getElementById('editVeiculoForm');
     const cancelEditBtn = document.getElementById('cancel-edit-btn');
     
-
     const viagemForm = document.getElementById('viagemForm');
     const viagemVeiculoSelect = document.getElementById('viagem-veiculo-select');
     const viagensList = document.getElementById('viagens-list');
-
 
     const despesaForm = document.getElementById('despesaForm');
     const despesasasList = document.getElementById('despesas-list');
@@ -50,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const editDespesaModal = document.getElementById('edit-despesa-modal');
     const editDespesaForm = document.getElementById('editDespesaForm');
     const cancelEditDespesaBtn = document.getElementById('cancel-edit-despesa-btn');
-
 
     const pagamentoForm = document.getElementById('pagamentoForm');
     const viagensAPagarList = document.getElementById('viagens-a-pagar-list');
@@ -64,9 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const reportDataInicio = document.getElementById('report-data-inicio');
     const reportDataFim = document.getElementById('report-data-fim');
 
+ 
     const API_URL = 'https://api.auctusconsultoria.com.br';
     const CONFIG = { appName: "Reembolso de Km" };
-
 
     const showView = (viewId) => {
         views.forEach(view => view.style.display = 'none');
@@ -74,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (viewToShow) { viewToShow.style.display = 'block'; }
         menuButtons.forEach(button => button.classList.toggle('active', button.dataset.view === viewId));
         
-
         if (viewId === 'view-home') fetchDashboardSummary();
         if (viewId === 'view-listar-veiculo') fetchVeiculos();
         if (viewId === 'view-lancar-km') populateVeiculoSelect(viagemVeiculoSelect);
@@ -83,12 +89,43 @@ document.addEventListener('DOMContentLoaded', () => {
         if (viewId === 'view-listar-despesas') fetchDespesas();
         if (viewId === 'view-lancar-pagamento') fetchViagensAPagar();
     };
+    
+    const showAuthScreen = (screenToShow) => {
+        loginArea.style.display = 'none';
+        registerArea.style.display = 'none';
+        forgotPasswordArea.style.display = 'none';
+        if (screenToShow) {
+            screenToShow.style.display = 'block';
+        }
+    };
+
+    const showLogin = () => { 
+        mainContainer.classList.add('container-login'); 
+        mainContainer.classList.remove('container-app'); 
+        dashboardArea.style.display = 'none'; 
+        showAuthScreen(loginArea); 
+    };
+
+    const showDashboard = () => { 
+        mainContainer.classList.remove('container-login'); 
+        mainContainer.classList.add('container-app'); 
+        loginArea.style.display = 'none'; 
+        registerArea.style.display = 'none';
+        forgotPasswordArea.style.display = 'none';
+        dashboardArea.style.display = 'block'; 
+        showView('view-home'); 
+    };
+
 
     menuButtons.forEach(button => button.addEventListener('click', (e) => showView(e.target.dataset.view)));
 
-    const showLogin = () => { mainContainer.classList.add('container-login'); mainContainer.classList.remove('container-app'); loginArea.style.display = 'block'; dashboardArea.style.display = 'none'; };
-    const showDashboard = () => { mainContainer.classList.remove('container-login'); mainContainer.classList.add('container-app'); loginArea.style.display = 'none'; dashboardArea.style.display = 'block'; showView('view-home'); };
+
+    showRegisterLink.addEventListener('click', (e) => { e.preventDefault(); showAuthScreen(registerArea); });
+    showForgotPasswordLink.addEventListener('click', (e) => { e.preventDefault(); showAuthScreen(forgotPasswordArea); });
+    showLoginFromRegisterLink.addEventListener('click', (e) => { e.preventDefault(); showAuthScreen(loginArea); });
+    showLoginFromForgotLink.addEventListener('click', (e) => { e.preventDefault(); showAuthScreen(loginArea); });
     
+
 
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -111,7 +148,62 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    logoutButton.addEventListener('click', () => { localStorage.removeItem('token'); messageArea.textContent = 'Você saiu com sucesso.'; messageArea.className = 'message success'; showLogin(); });
+    registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nome = document.getElementById('register-nome').value;
+        const email = document.getElementById('register-email').value;
+        const senha = document.getElementById('register-password').value;
+
+        try {
+            const response = await fetch(`${API_URL}/api/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, email, senha })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message);
+            
+            messageArea.textContent = data.message;
+            messageArea.className = 'message success';
+            setTimeout(() => {
+                showAuthScreen(loginArea);
+                messageArea.textContent = '';
+            }, 2000);
+
+        } catch (error) {
+            messageArea.textContent = `Erro: ${error.message}`;
+            messageArea.className = 'message error';
+        }
+    });
+
+    forgotPasswordForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('forgot-email').value;
+        
+        try {
+            const response = await fetch(`${API_URL}/api/auth/forgot-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message);
+
+            messageArea.textContent = data.message;
+            messageArea.className = 'message success';
+            
+        } catch (error) {
+            messageArea.textContent = `Erro: ${error.message}`;
+            messageArea.className = 'message error';
+        }
+    });
+
+    logoutButton.addEventListener('click', () => { 
+        localStorage.removeItem('token'); 
+        messageArea.textContent = 'Você saiu com sucesso.'; 
+        messageArea.className = 'message success'; 
+        showLogin(); 
+    });
     
 
     const populateVeiculoSelect = async (selectElement) => {
@@ -132,7 +224,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
-
     const fetchVeiculos = async () => {
         const token = localStorage.getItem('token');
         if (!token) { showLogin(); return; }
@@ -278,15 +369,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 viagens.forEach(v => {
                     const viagemDiv = document.createElement('div');
                     viagemDiv.className = 'viagem-item';
-
                     const dataViagem = new Date(v.data_viagem).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
                     let statusClass = '';
                     switch (v.status_pagamento) {
                         case 'A Pagar': statusClass = 'status-apagar'; break;
-                        case 'Pago': 
-                            statusClass = 'status-pago'; 
-                            viagemDiv.classList.add('pago');
-                            break;
+                        case 'Pago': statusClass = 'status-pago'; viagemDiv.classList.add('pago'); break;
                         case 'Pago Parcial': statusClass = 'status-pago-parcial'; break;
                         default: statusClass = '';
                     }
@@ -479,19 +566,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const token = localStorage.getItem('token');
         try {
             selecionarTodasCheckbox.checked = false;
-            const response = await fetch(`${API_URL}/api/pagamentos/apagar`, { 
-                headers: { 'Authorization': `Bearer ${token}` } 
-            });
+            const response = await fetch(`${API_URL}/api/pagamentos/apagar`, { headers: { 'Authorization': `Bearer ${token}` } });
             if (!response.ok) throw new Error('Falha ao buscar viagens a pagar.');
-            
             const viagens = await response.json();
             viagensAPagarList.innerHTML = '';
-
             if (viagens.length === 0) {
                 viagensAPagarList.innerHTML = '<p style="padding: 10px;">Nenhuma viagem a pagar encontrada.</p>';
                 return;
             }
-
             viagens.forEach(v => {
                 const dataViagem = new Date(v.data_viagem).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
                 const itemDiv = document.createElement('div');
@@ -506,7 +588,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 viagensAPagarList.appendChild(itemDiv);
             });
-
         } catch (error) {
             messageArea.textContent = `Erro: ${error.message}`;
             messageArea.className = 'message error';
@@ -515,35 +596,22 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const atualizarResumoPagamento = () => {
-        const checkboxes = document.querySelectorAll('.viagem-checkbox');
         const checkedCheckboxes = document.querySelectorAll('.viagem-checkbox:checked');
-        
         let totalViagens = 0;
         let valorTotal = 0;
-
         checkedCheckboxes.forEach(cb => {
             totalViagens++;
             valorTotal += parseFloat(cb.dataset.valor);
         });
-
         totalViagensSpan.textContent = totalViagens;
         valorTotalSpan.textContent = valorTotal.toFixed(2);
-        
-        if (checkboxes.length > 0 && checkboxes.length === checkedCheckboxes.length) {
-            selecionarTodasCheckbox.checked = true;
-        } else {
-            selecionarTodasCheckbox.checked = false;
-        }
+        selecionarTodasCheckbox.checked = document.querySelectorAll('.viagem-checkbox').length > 0 && checkedCheckboxes.length === document.querySelectorAll('.viagem-checkbox').length;
     };
     
     viagensAPagarList.addEventListener('change', atualizarResumoPagamento);
 
     selecionarTodasCheckbox.addEventListener('change', (event) => {
-        const isChecked = event.target.checked;
-        const checkboxes = document.querySelectorAll('.viagem-checkbox');
-        checkboxes.forEach(cb => {
-            cb.checked = isChecked;
-        });
+        document.querySelectorAll('.viagem-checkbox').forEach(cb => cb.checked = event.target.checked);
         atualizarResumoPagamento();
     });
 
@@ -551,13 +619,11 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         const token = localStorage.getItem('token');
         const selectedViagensIds = Array.from(document.querySelectorAll('.viagem-checkbox:checked')).map(cb => cb.value);
-
         if (selectedViagensIds.length === 0) {
             messageArea.textContent = 'Erro: Selecione ao menos uma viagem para pagar.';
             messageArea.className = 'message error';
             return;
         }
-
         const pagamentoData = {
             viagens_ids: selectedViagensIds,
             data_pagamento: document.getElementById('pagamento-data').value,
@@ -565,7 +631,6 @@ document.addEventListener('DOMContentLoaded', () => {
             valor_total: parseFloat(valorTotalSpan.textContent),
             descricao: document.getElementById('pagamento-descricao').value,
         };
-
         try {
             const response = await fetch(`${API_URL}/api/pagamentos`, {
                 method: 'POST',
@@ -574,122 +639,88 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const data = await response.json();
             if (!response.ok) throw new Error(data.message);
-
             messageArea.textContent = 'Pagamento registrado com sucesso!';
             messageArea.className = 'message success';
             pagamentoForm.reset();
             atualizarResumoPagamento();
             fetchViagensAPagar();
             showView('view-listar-viagens');
-
         } catch (error) {
             messageArea.textContent = `Erro: ${error.message}`;
             messageArea.className = 'message error';
         }
     });
 
-
-
-
-const fetchDashboardSummary = async () => {
-    const token = localStorage.getItem('token');
     
-
-    const mes = document.getElementById('filter-month').value;
-    const ano = document.getElementById('filter-year').value;
-
-
-    const apiUrlWithFilters = `${API_URL}/api/dashboard/summary?mes=${mes}&ano=${ano}`;
-
-    try {
-        const response = await fetch(apiUrlWithFilters, { 
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (!response.ok) throw new Error('Falha ao carregar o resumo.');
-        
-        const summary = await response.json();
-
-        document.getElementById('card-km-mes').textContent = `${summary.totalKmMes.toFixed(1)} km`;
-        document.getElementById('card-receber-mes').textContent = `R$ ${summary.totalAReceberMes.toFixed(2)}`;
-        document.getElementById('card-despesas-mes').textContent = `R$ ${summary.totalDespesasMes.toFixed(2)}`;
-
-        const alertaDiv = document.getElementById('card-alerta-atrasados');
-        if (summary.pendentesMesesAnteriores > 0) {
-            alertaDiv.textContent = `Atenção: Você possui ${summary.pendentesMesesAnteriores} viagem(s) de meses anteriores com pagamento pendente.`;
-            alertaDiv.style.display = 'block';
-        } else {
-            alertaDiv.style.display = 'none';
+    const fetchDashboardSummary = async () => {
+        const token = localStorage.getItem('token');
+        const mes = document.getElementById('filter-month').value;
+        const ano = document.getElementById('filter-year').value;
+        const apiUrlWithFilters = `${API_URL}/api/dashboard/summary?mes=${mes}&ano=${ano}`;
+        try {
+            const response = await fetch(apiUrlWithFilters, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (!response.ok) throw new Error('Falha ao carregar o resumo.');
+            const summary = await response.json();
+            document.getElementById('card-km-mes').textContent = `${Number(summary.totalKmMes).toFixed(1)} km`;
+            document.getElementById('card-receber-mes').textContent = `R$ ${Number(summary.totalAReceberMes).toFixed(2)}`;
+            document.getElementById('card-despesas-mes').textContent = `R$ ${Number(summary.totalDespesasMes).toFixed(2)}`;
+            const alertaDiv = document.getElementById('card-alerta-atrasados');
+            if (summary.pendentesMesesAnteriores > 0) {
+                alertaDiv.textContent = `Atenção: Você possui ${summary.pendentesMesesAnteriores} viagem(s) de meses anteriores com pagamento pendente.`;
+                alertaDiv.style.display = 'block';
+            } else {
+                alertaDiv.style.display = 'none';
+            }
+        } catch (error) {
+            document.getElementById('view-home').innerHTML = `<p style="color: red;">${error.message}</p>`;
         }
+    };
 
-    } catch (error) {
-        document.getElementById('view-home').innerHTML = `<p style="color: red;">${error.message}</p>`;
+    function initializeDashboardFilters() {
+        const monthSelect = document.getElementById('filter-month');
+        const yearInput = document.getElementById('filter-year');
+        const applyFilterBtn = document.getElementById('apply-filter-btn');
+        const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+        meses.forEach((mes, index) => {
+            const option = document.createElement('option');
+            option.value = index + 1;
+            option.textContent = mes;
+            monthSelect.appendChild(option);
+        });
+        const hoje = new Date();
+        monthSelect.value = hoje.getMonth() + 1;
+        yearInput.value = hoje.getFullYear();
+        applyFilterBtn.addEventListener('click', fetchDashboardSummary);
     }
-};
 
-function initializeDashboardFilters() {
-    const monthSelect = document.getElementById('filter-month');
-    const yearInput = document.getElementById('filter-year');
-    const applyFilterBtn = document.getElementById('apply-filter-btn');
-
-    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-    
-
-    meses.forEach((mes, index) => {
-        const option = document.createElement('option');
-        option.value = index + 1;
-        option.textContent = mes;
-        monthSelect.appendChild(option);
-    });
-
-
-    const hoje = new Date();
-    monthSelect.value = hoje.getMonth() + 1;
-    yearInput.value = hoje.getFullYear();
-
-
-    applyFilterBtn.addEventListener('click', fetchDashboardSummary);
-}
-
-        gerarRelatorioBtn.addEventListener('click', async () => {
+    gerarRelatorioBtn.addEventListener('click', async () => {
         const dataInicio = reportDataInicio.value;
         const dataFim = reportDataFim.value;
-
         if (!dataInicio || !dataFim) {
             reportContent.innerHTML = `<p style="color: red;">Por favor, selecione as datas de início e fim.</p>`;
             return;
         }
-
         const token = localStorage.getItem('token');
         reportContent.innerHTML = `<p>Gerando relatório...</p>`;
-
         try {
             const response = await fetch(`${API_URL}/api/relatorios/viagens?data_inicio=${dataInicio}&data_fim=${dataFim}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-
-            if (!response.ok) {
-                const err = await response.json();
-                throw new Error(err.message);
-            }
-
+            if (!response.ok) { const err = await response.json(); throw new Error(err.message); }
             const dados = await response.json();
-
             if (dados.length === 0) {
                 reportContent.innerHTML = '<p>Nenhuma viagem encontrada para o período selecionado.</p>';
                 imprimirRelatorioBtn.style.display = 'none';
                 return;
             }
-
             let totalKm = 0;
             let totalReembolso = 0;
             let totalReembolsado = 0;
-
             let tableRows = '';
             dados.forEach(d => {
                 totalKm += parseFloat(d.distancia_percorrida);
                 totalReembolso += parseFloat(d.valor_reembolso);
                 totalReembolsado += parseFloat(d.valor_reembolsado);
-
                 tableRows += `
                     <tr>
                         <td>${new Date(d.data_viagem).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</td>
@@ -703,55 +734,32 @@ function initializeDashboardFilters() {
                     </tr>
                 `;
             });
-
             reportContent.innerHTML = `
                 <table class="report-table">
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Saída</th>
-                            <th>Chegada</th>
-                            <th>KM Rodado</th>
-                            <th>Vl. Reembolso</th>
-                            <th>Vl. Reembolsado</th>
-                            <th>Dt. Reembolso</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${tableRows}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="3">TOTAIS</td>
-                            <td>${totalKm.toFixed(2)}</td>
-                            <td>R$ ${totalReembolso.toFixed(2)}</td>
-                            <td>R$ ${totalReembolsado.toFixed(2)}</td>
-                            <td colspan="2"></td>
-                        </tr>
-                    </tfoot>
+                    <thead><tr><th>Data</th><th>Saída</th><th>Chegada</th><th>KM Rodado</th><th>Vl. Reembolso</th><th>Vl. Reembolsado</th><th>Dt. Reembolso</th><th>Status</th></tr></thead>
+                    <tbody>${tableRows}</tbody>
+                    <tfoot><tr><td colspan="3">TOTAIS</td><td>${totalKm.toFixed(2)}</td><td>R$ ${totalReembolso.toFixed(2)}</td><td>R$ ${totalReembolsado.toFixed(2)}</td><td colspan="2"></td></tr></tfoot>
                 </table>
             `;
-
             imprimirRelatorioBtn.style.display = 'inline-block';
-
         } catch (error) {
             reportContent.innerHTML = `<p style="color: red;">Erro ao gerar relatório: ${error.message}</p>`;
             imprimirRelatorioBtn.style.display = 'none';
         }
     });
 
-    imprimirRelatorioBtn.addEventListener('click', () => {
-        window.print();
-    });
+    imprimirRelatorioBtn.addEventListener('click', () => { window.print(); });
 
 
-initializeDashboardFilters();
-    
+    initializeDashboardFilters();
     pageTitle.textContent = CONFIG.appName;
     loginTitle.textContent = CONFIG.appName;
     dashboardTitle.textContent = `Painel ${CONFIG.appName}`;
-    const token = localStorage.getItem('token');
-    if (token) { showDashboard(); } else { showLogin(); }
     document.getElementById('currentYear').textContent = new Date().getFullYear();
+    const token = localStorage.getItem('token');
+    if (token) { 
+        showDashboard(); 
+    } else { 
+        showLogin(); 
+    }
 });
