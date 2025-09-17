@@ -732,11 +732,33 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const fetchDashboardSummary = async () => {
         const token = localStorage.getItem('token');
-        const mes = document.getElementById('filter-month').value;
-        const ano = document.getElementById('filter-year').value;
-        const apiUrlWithFilters = `${API_URL}/api/dashboard/summary?mes=${mes}&ano=${ano}`;
+        const filterType = document.querySelector('input[name="filter-type"]:checked').value;
+        const params = new URLSearchParams();
+
+        // MUDANÇA IMPORTANTE: Adiciona o tipo de filtro na requisição
+        params.append('filterType', filterType);
+
+        if (filterType === 'month') {
+            const mes = document.getElementById('filter-month').value;
+            const ano = document.getElementById('filter-year').value;
+            params.append('mes', mes);
+            params.append('ano', ano);
+        } else { // 'period'
+            const data_inicio = document.getElementById('filter-data-inicio').value;
+            const data_fim = document.getElementById('filter-data-fim').value;
+            if (!data_inicio || !data_fim) {
+                messageArea.textContent = 'Por favor, selecione data de início e fim.';
+                messageArea.className = 'message error';
+                return;
+            }
+            params.append('data_inicio', data_inicio);
+            params.append('data_fim', data_fim);
+        }
+
         try {
-            const response = await fetch(apiUrlWithFilters, { headers: { 'Authorization': `Bearer ${token}` } });
+            const response = await fetch(`${API_URL}/api/dashboard/summary?${params.toString()}`, { 
+                headers: { 'Authorization': `Bearer ${token}` } 
+            });
             if (!response.ok) throw new Error('Falha ao carregar o resumo.');
             const summary = await response.json();
             document.getElementById('card-km-mes').textContent = `${Number(summary.totalKmMes).toFixed(1)} km`;
@@ -751,6 +773,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 alertaDiv.style.display = 'none';
             }
         } catch (error) {
+            // Limpa a área de mensagem antes de mostrar um novo erro de filtro
+            messageArea.textContent = '';
+            messageArea.className = 'message';
             document.getElementById('view-home').innerHTML = `<p style="color: red;">${error.message}</p>`;
         }
     };
@@ -759,6 +784,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const monthSelect = document.getElementById('filter-month');
         const yearInput = document.getElementById('filter-year');
         const applyFilterBtn = document.getElementById('apply-filter-btn');
+        const filterTypeRadios = document.querySelectorAll('input[name="filter-type"]');
+        const monthYearFilter = document.getElementById('filter-by-month-year');
+        const dateRangeFilter = document.getElementById('filter-by-date-range');
+
+        filterTypeRadios.forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                if (event.target.value === 'month') {
+                    monthYearFilter.style.display = 'flex';
+                    dateRangeFilter.style.display = 'none';
+                } else {
+                    monthYearFilter.style.display = 'none';
+                    dateRangeFilter.style.display = 'flex';
+                }
+            });
+        });
+
         const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
         meses.forEach((mes, index) => {
             const option = document.createElement('option');
