@@ -735,7 +735,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const filterType = document.querySelector('input[name="filter-type"]:checked').value;
         const params = new URLSearchParams();
 
-        // MUDANÇA IMPORTANTE: Adiciona o tipo de filtro na requisição
+
         params.append('filterType', filterType);
 
         if (filterType === 'month') {
@@ -773,7 +773,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alertaDiv.style.display = 'none';
             }
         } catch (error) {
-            // Limpa a área de mensagem antes de mostrar um novo erro de filtro
+
             messageArea.textContent = '';
             messageArea.className = 'message';
             document.getElementById('view-home').innerHTML = `<p style="color: red;">${error.message}</p>`;

@@ -2,15 +2,14 @@ const db = require('../config/db');
 
 exports.getDashboardSummary = async (req, res) => {
     const usuario_id = req.user.id;
-    // MUDANÇA AQUI: Capturamos também o filterType
+
     const { mes, ano, data_inicio, data_fim, filterType } = req.query;
 
     try {
         let kmResult, aReceberResult, despesasResult, totalPagoResult;
 
-        // MUDANÇA NA LÓGICA: Agora usamos o filterType para decidir
         if (filterType === 'month' && mes && ano) {
-            // Lógica existente para filtro por Mês/Ano
+
             const intMes = parseInt(mes, 10);
             const intAno = parseInt(ano, 10);
 
@@ -46,7 +45,6 @@ exports.getDashboardSummary = async (req, res) => {
             totalPagoResult = await db.query(totalPagoQuery, [usuario_id, intMes, intAno]);
 
         } else if (filterType === 'period' && data_inicio && data_fim) {
-            // Nova lógica para filtro por Período
             const kmPeriodoQuery = `
                 SELECT COALESCE(SUM(distancia_percorrida), 0) as total_km
                 FROM app.viagens
@@ -80,7 +78,6 @@ exports.getDashboardSummary = async (req, res) => {
             return res.status(400).json({ message: 'Parâmetros de filtro inválidos. Forneça o tipo de filtro e os valores correspondentes.' });
         }
 
-        // Esta query não depende do filtro de período, então permanece igual.
         const pendentesAnterioresQuery = `
             SELECT COUNT(*) as count_pendentes
             FROM app.viagens
