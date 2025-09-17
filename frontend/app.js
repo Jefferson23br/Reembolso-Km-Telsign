@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const viagensPageInfo = document.getElementById('viagens-page-info');
     const viagensLimitSelect = document.getElementById('viagens-limit-select');
 
+    const editDespesaComprovanteFile = document.getElementById('edit-despesa-comprovante-file');
  
     const API_URL = 'https://api.auctusconsultoria.com.br';
     const CONFIG = { appName: "Reembolso de Km" };
@@ -623,16 +624,24 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         const token = localStorage.getItem('token');
         const id = document.getElementById('edit-despesa-id').value;
+
+        const valorComVirgula = document.getElementById('edit-despesa-valor').value;
+        const valorFormatado = valorComVirgula.replace(/\./g, '').replace(',', '.');
+
+        const kmValue = document.getElementById('edit-despesa-km').value;
+
         const despesaData = {
             veiculo_id: document.getElementById('edit-despesa-veiculo-select').value,
             data_despesa: document.getElementById('edit-despesa-data').value,
             tipo_despesa: document.getElementById('edit-despesa-tipo').value,
             forma_pagamento: document.getElementById('edit-despesa-forma-pagamento').value,
-            valor: document.getElementById('edit-despesa-valor').value,
+            valor: valorFormatado,
+            km: kmValue ? parseInt(kmValue, 10) : null,
             status_pagamento: document.getElementById('edit-despesa-status-pagamento').value,
             link_comprovante: document.getElementById('edit-despesa-link-comprovante').value,
             descricao: document.getElementById('edit-despesa-descricao').value,
         };
+
         try {
             const response = await fetch(`${API_URL}/api/despesas/${id}`, {
                 method: 'PUT',
@@ -648,6 +657,45 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             messageArea.textContent = `Erro: ${error.message}`;
             messageArea.className = 'message error';
+        }
+    });
+
+    editDespesaComprovanteFile.addEventListener('change', async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('comprovante', file);
+        const token = localStorage.getItem('token');
+
+        try {
+            messageArea.textContent = 'Enviando novo comprovante...';
+            messageArea.className = 'message';
+
+            const response = await fetch(`${API_URL}/api/upload`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+                body: formData
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message);
+
+            
+            document.getElementById('edit-despesa-link-comprovante').value = data.filePath;
+            
+           
+            const previewContainer = document.getElementById('edit-comprovante-preview-container');
+            document.getElementById('edit-comprovante-preview-img').src = `${API_URL}${data.filePath}`;
+            document.getElementById('edit-comprovante-download-link').href = `${API_URL}${data.filePath}`;
+            previewContainer.style.display = 'block';
+
+            messageArea.textContent = 'Novo comprovante anexado com sucesso!';
+            messageArea.className = 'message success';
+        } catch (error) {
+            messageArea.textContent = `Erro no upload: ${error.message}`;
+            messageArea.className = 'message error';
+            editDespesaComprovanteFile.value = ''; 
         }
     });
 
