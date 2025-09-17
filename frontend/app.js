@@ -500,16 +500,33 @@ document.addEventListener('DOMContentLoaded', () => {
     despesaForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const token = localStorage.getItem('token');
+
+        
+        const valorComVirgula = document.getElementById('despesa-valor').value;
+        const valorFormatado = valorComVirgula.replace('.', '').replace(',', '.');
+
+       
+        const kmValue = document.getElementById('despesa-km').value;
+
         const despesaData = {
             veiculo_id: despesaVeiculoSelect.value,
             data_despesa: document.getElementById('despesa-data').value,
             tipo_despesa: document.getElementById('despesa-tipo').value,
             forma_pagamento: document.getElementById('despesa-forma-pagamento').value,
-            valor: document.getElementById('despesa-valor').value,
+            valor: valorFormatado, 
+            km: kmValue ? parseInt(kmValue, 10) : null, 
             status_pagamento: document.getElementById('despesa-status-pagamento').value,
             link_comprovante: despesaLinkComprovante.value,
             descricao: document.getElementById('despesa-descricao').value,
         };
+
+
+        if (isNaN(parseFloat(despesaData.valor))) {
+            messageArea.textContent = 'Erro: O valor da despesa é inválido.';
+            messageArea.className = 'message error';
+            return;
+        }
+
         try {
             const response = await fetch(`${API_URL}/api/despesas`, {
                 method: 'POST',

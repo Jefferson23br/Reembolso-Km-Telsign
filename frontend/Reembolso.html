@@ -194,15 +194,46 @@
                     <div id="view-lancar-despesa" class="view" style="display: none;">
                         <h3>Lançar Nova Despesa</h3>
                         <form id="despesaForm">
-                            <label for="despesa-veiculo-select">Veículo Associado</label><select id="despesa-veiculo-select" required></select>
-                            <label for="despesa-data">Data da Despesa</label><input type="date" id="despesa-data" required>
-                            <label for="despesa-tipo">Tipo de Despesa</label><select id="despesa-tipo" required><option value="">-- Selecione o Tipo --</option><option value="Manutenção Veicular">Manutenção Veicular</option><option value="Implemento">Implemento</option><option value="Combustível">Combustível</option></select>
-                            <label for="despesa-forma-pagamento">Forma de Pagamento</label><select id="despesa-forma-pagamento" required><option value="">-- Selecione a Forma --</option><option value="Débito">Débito</option><option value="Crédito">Crédito</option><option value="Dinheiro">Dinheiro</option></select>
-                            <label for="despesa-valor">Valor (R$)</label><input type="number" step="0.01" id="despesa-valor" placeholder="Ex: 150.75" required>
-                            <label for="despesa-status-pagamento">Status do Pagamento</label><select id="despesa-status-pagamento" required><option value="Não Pago">Não Pago</option><option value="Pago">Pago</option></select>
-                            <label for="despesa-comprovante-file">Anexar Comprovante (Opcional)</label><input type="file" id="despesa-comprovante-file">
+                            <label for="despesa-veiculo-select">Veículo Associado</label>
+                            <select id="despesa-veiculo-select" required></select>
+                            
+                            <label for="despesa-data">Data da Despesa</label>
+                            <input type="date" id="despesa-data" required>
+                            
+                            <label for="despesa-tipo">Tipo de Despesa</label>
+                            <select id="despesa-tipo" required>
+                                <option value="">-- Selecione o Tipo --</option>
+                                <option value="Manutenção Veicular">Manutenção Veicular</option>
+                                <option value="Implemento">Implemento</option>
+                                <option value="Combustível">Combustível</option>
+                            </select>
+                            
+                            <label for="despesa-forma-pagamento">Forma de Pagamento</label>
+                            <select id="despesa-forma-pagamento" required>
+                                <option value="">-- Selecione a Forma --</option>
+                                <option value="Débito">Débito</option>
+                                <option value="Crédito">Crédito</option>
+                                <option value="Dinheiro">Dinheiro</option>
+                            </select>
+                            
+                            <label for="despesa-valor">Valor (R$)</label>
+                            <input type="text" id="despesa-valor" placeholder="Ex: 350,00" required> <label for="despesa-km">Km (Opcional)</label>
+                            <input type="number" id="despesa-km" placeholder="Ex: 35000">
+                            
+                            <label for="despesa-status-pagamento">Status do Pagamento</label>
+                            <select id="despesa-status-pagamento" required>
+                                <option value="Não Pago">Não Pago</option>
+                                <option value="Pago">Pago</option>
+                            </select>
+                            
+                            <label for="despesa-comprovante-file">Anexar Comprovante (Opcional)</label>
+                            <input type="file" id="despesa-comprovante-file">
+                            
                             <input type="hidden" id="despesa-link-comprovante">
-                            <label for="despesa-descricao">Descrição (Opcional)</label><textarea id="despesa-descricao" rows="3"></textarea>
+                            
+                            <label for="despesa-descricao">Descrição (Opcional)</label>
+                            <textarea id="despesa-descricao" rows="3"></textarea>
+                            
                             <button type="submit">Registrar Despesa</button>
                         </form>
                     </div>
