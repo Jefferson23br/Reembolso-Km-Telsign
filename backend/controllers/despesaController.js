@@ -30,18 +30,65 @@ exports.createDespesa = async (req, res) => {
     }
 };
 
+// ==================================================================
+// FUNÇÃO TOTALMENTE ATUALIZADA
+// ==================================================================
 exports.getMinhasDespesas = async (req, res) => {
     const usuario_id = req.user.id;
+
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 5;
+    const offset = (page - 1) * limit;
+
+    const { data_inicio, data_fim, tipo, status } = req.query;
+
+    let whereClauses = ['d.usuario_id = $1'];
+    let queryParams = [usuario_id];
+    let paramIndex = 2;
+
+    if (data_inicio) {
+        whereClauses.push(`d.data_despesa >= $${paramIndex++}`);
+        queryParams.push(data_inicio);
+    }
+    if (data_fim) {
+        whereClauses.push(`d.data_despesa <= $${paramIndex++}`);
+        queryParams.push(data_fim);
+    }
+    if (tipo) {
+        whereClauses.push(`d.tipo_despesa = $${paramIndex++}`);
+        queryParams.push(tipo);
+    }
+    if (status) {
+        whereClauses.push(`d.status_pagamento = $${paramIndex++}`);
+        queryParams.push(status);
+    }
+    
+    const whereString = whereClauses.join(' AND ');
+
     try {
+        const totalQueryText = `SELECT COUNT(*) AS total_count FROM app.despesas d WHERE ${whereString}`;
+        const totalResult = await db.query(totalQueryText, queryParams);
+        const totalItems = parseInt(totalResult.rows[0].total_count, 10);
+
         const queryText = `
             SELECT d.*, v.placa, v.descricao as veiculo_descricao
             FROM app.despesas d
             JOIN app.veiculos v ON d.veiculo_id = v.id
-            WHERE d.usuario_id = $1
+            WHERE ${whereString}
             ORDER BY d.data_despesa DESC, d.criado_em DESC
+            LIMIT $${paramIndex++} OFFSET $${paramIndex++}
         `;
-        const result = await db.query(queryText, [usuario_id]);
-        res.status(200).json(result.rows);
+        const finalQueryParams = [...queryParams, limit, offset];
+
+        const result = await db.query(queryText, finalQueryParams);
+
+        res.status(200).json({
+            despesas: result.rows,
+            totalItems: totalItems,
+            totalPages: Math.ceil(totalItems / limit),
+            currentPage: page
+        });
+
     } catch (error) { 
         console.error(error);
         res.status(500).json({ message: 'Erro no servidor ao buscar despesas.' });

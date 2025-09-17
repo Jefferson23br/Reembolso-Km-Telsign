@@ -237,20 +237,52 @@
                             <button type="submit">Registrar Despesa</button>
                         </form>
                     </div>
-                    <div id="view-listar-despesas" class="view" style="display: none;"><h3>Despesas Registradas</h3><div id="despesas-list"></div></div>
-                        <div id="view-lancar-pagamento" class="view" style="display: none;">
-                            <h3>Lançar Pagamento de Reembolso</h3>
-                            <form id="pagamentoForm">
-                                <label>Viagens com Status "A Pagar":</label>
-                                <div id="viagens-a-pagar-container" style="border: 1px solid #ccc; border-radius: 4px; margin-bottom: 1rem;">
-                                    <div class="select-all-container">
-                                        <input type="checkbox" id="selecionar-todas">
-                                        <label for="selecionar-todas">Selecionar Todas</label>
-                                    </div>
-                                    <div id="viagens-a-pagar-list" style="max-height: 250px; overflow-y: auto;">
-                                        <p style="padding: 10px;">Buscando viagens...</p>
-                                    </div>
-                                </div>
+                    <div id="view-listar-despesas" class="view" style="display: none;">
+                        <h3>Despesas Registradas</h3>
+
+                        <div class="viagens-filters">
+                            <div class="filter-group">
+                                <label for="despesas-filtro-data-inicio">De:</label>
+                                <input type="date" id="despesas-filtro-data-inicio">
+                            </div>
+                            <div class="filter-group">
+                                <label for="despesas-filtro-data-fim">Até:</label>
+                                <input type="date" id="despesas-filtro-data-fim">
+                            </div>
+                            <div class="filter-group">
+                                <label for="despesas-filtro-tipo">Tipo:</label>
+                                <select id="despesas-filtro-tipo">
+                                    <option value="">Todos</option>
+                                    <option value="Manutenção Veicular">Manutenção Veicular</option>
+                                    <option value="Implemento">Implemento</option>
+                                    <option value="Combustível">Combustível</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="despesas-filtro-status">Status:</label>
+                                <select id="despesas-filtro-status">
+                                    <option value="">Todos</option>
+                                    <option value="Não Pago">Não Pago</option>
+                                    <option value="Pago">Pago</option>
+                                </select>
+                            </div>
+                            <button id="despesas-btn-filtrar">Filtrar</button>
+                        </div>
+                        
+                        <div id="despesas-list"></div>
+
+                        <div class="pagination-controls">
+                            <button id="despesas-btn-prev">Anterior</button>
+                            <span id="despesas-page-info"></span>
+                            <button id="despesas-btn-next">Próxima</button>
+                            <select id="despesas-limit-select">
+                                <option value="5">5 por página</option>
+                                <option value="10">10 por página</option>
+                                <option value="15">15 por página</option>
+                                <option value="20">20 por página</option>
+                            </select>
+                        </div>
+                    </div>
 
                                 <h4>Resumo do Pagamento</h4>
                                 <p><strong>Total de Viagens Selecionadas:</strong> <span id="total-viagens-selecionadas">0</span></p>

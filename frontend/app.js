@@ -81,6 +81,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const viagensPageInfo = document.getElementById('viagens-page-info');
     const viagensLimitSelect = document.getElementById('viagens-limit-select');
 
+    const despesasFiltroDataInicio = document.getElementById('despesas-filtro-data-inicio');
+    const despesasFiltroDataFim = document.getElementById('despesas-filtro-data-fim');
+    const despesasFiltroTipo = document.getElementById('despesas-filtro-tipo');
+    const despesasFiltroStatus = document.getElementById('despesas-filtro-status');
+    const despesasBtnFiltrar = document.getElementById('despesas-btn-filtrar');
+    const despesasBtnPrev = document.getElementById('despesas-btn-prev');
+    const despesasBtnNext = document.getElementById('despesas-btn-next');
+    const despesasPageInfo = document.getElementById('despesas-page-info');
+    const despesasLimitSelect = document.getElementById('despesas-limit-select');
+
     const editDespesaComprovanteFile = document.getElementById('edit-despesa-comprovante-file');
  
     const API_URL = 'https://api.auctusconsultoria.com.br';
@@ -89,6 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
  
     let viagensCurrentPage = 1;
     let viagensTotalPages = 1;
+    let despesasCurrentPage = 1;
+    let despesasTotalPages = 1;
 
     const showView = (viewId) => {
         views.forEach(view => view.style.display = 'none');
@@ -104,7 +116,10 @@ document.addEventListener('DOMContentLoaded', () => {
             fetchViagens();
         }
         if (viewId === 'view-lancar-despesa') populateVeiculoSelect(despesaVeiculoSelect);
-        if (viewId === 'view-listar-despesas') fetchDespesas();
+        if (viewId === 'view-listar-despesas') {
+            despesasCurrentPage = 1;
+            fetchDespesas();
+        }
         if (viewId === 'view-lancar-pagamento') fetchViagensAPagar();
     };
     
@@ -549,13 +564,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fetchDespesas = async () => {
         const token = localStorage.getItem('token');
+        if (!token) { showLogin(); return; }
+
+        const limit = despesasLimitSelect.value;
+        const data_inicio = despesasFiltroDataInicio.value;
+        const data_fim = despesasFiltroDataFim.value;
+        const tipo = despesasFiltroTipo.value;
+        const status = despesasFiltroStatus.value;
+
+        const params = new URLSearchParams({
+            page: despesasCurrentPage,
+            limit: limit
+        });
+        if (data_inicio) params.append('data_inicio', data_inicio);
+        if (data_fim) params.append('data_fim', data_fim);
+        if (tipo) params.append('tipo', tipo);
+        if (status) params.append('status', status);
+
         try {
-            const response = await fetch(`${API_URL}/api/despesas`, { headers: { 'Authorization': `Bearer ${token}` } });
+            const response = await fetch(`${API_URL}/api/despesas?${params.toString()}`, { 
+                headers: { 'Authorization': `Bearer ${token}` } 
+            });
             if (!response.ok) throw new Error('Falha ao buscar despesas.');
-            const despesas = await response.json();
+            
+            const data = await response.json();
+            const { despesas, totalItems, totalPages } = data;
+            
+            despesasTotalPages = totalPages;
+
             despesasasList.innerHTML = '';
             if (despesas.length === 0) {
-                despesasasList.innerHTML = '<p>Nenhuma despesa registrada.</p>';
+                despesasasList.innerHTML = '<p>Nenhuma despesa encontrada para os filtros selecionados.</p>';
             } else {
                 despesas.forEach(d => {
                     const itemDiv = document.createElement('div');
@@ -575,12 +614,43 @@ document.addEventListener('DOMContentLoaded', () => {
                     despesasasList.appendChild(itemDiv);
                 });
             }
+            updateDespesasPaginationControls();
         } catch (error) {
             messageArea.textContent = `Erro: ${error.message}`;
             messageArea.className = 'message error';
         }
     };
     
+    const updateDespesasPaginationControls = () => {
+        despesasPageInfo.textContent = `Página ${despesasCurrentPage} de ${despesasTotalPages}`;
+        despesasBtnPrev.disabled = despesasCurrentPage <= 1;
+        despesasBtnNext.disabled = despesasCurrentPage >= despesasTotalPages;
+    };
+
+    despesasBtnFiltrar.addEventListener('click', () => {
+        despesasCurrentPage = 1;
+        fetchDespesas();
+    });
+
+    despesasLimitSelect.addEventListener('change', () => {
+        despesasCurrentPage = 1;
+        fetchDespesas();
+    });
+
+    despesasBtnPrev.addEventListener('click', () => {
+        if (despesasCurrentPage > 1) {
+            despesasCurrentPage--;
+            fetchDespesas();
+        }
+    });
+
+    despesasBtnNext.addEventListener('click', () => {
+        if (despesasCurrentPage < despesasTotalPages) {
+            despesasCurrentPage++;
+            fetchDespesas();
+        }
+    });
+
     despesasasList.addEventListener('click', async (event) => {
         const token = localStorage.getItem('token');
         if (event.target.classList.contains('delete-despesa-btn')) {
