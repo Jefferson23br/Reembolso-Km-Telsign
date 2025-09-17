@@ -52,10 +52,12 @@ router.post('/', protect, upload.single('comprovante'), (req, res) => {
         return res.status(400).send({ message: 'Por favor, anexe um arquivo.' });
     }
 
+    
+    const filePath = `/uploads/${req.file.filename}`;
 
     res.status(201).send({
         message: 'Arquivo enviado com sucesso!',
-        filePath: `/uploads/${req.file.filename}` 
+        filePath: filePath 
     });
 });
 

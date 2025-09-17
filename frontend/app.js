@@ -604,6 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`${API_URL}/api/despesas`, { headers: { 'Authorization': `Bearer ${token}` }});
             const despesas = await response.json();
             const despesaParaEditar = despesas.find(d => d.id == id);
+            
             if (despesaParaEditar) {
                 await populateVeiculoSelect(document.getElementById('edit-despesa-veiculo-select'));
                 document.getElementById('edit-despesa-id').value = despesaParaEditar.id;
@@ -611,10 +612,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('edit-despesa-data').value = new Date(despesaParaEditar.data_despesa).toISOString().split('T')[0];
                 document.getElementById('edit-despesa-tipo').value = despesaParaEditar.tipo_despesa;
                 document.getElementById('edit-despesa-forma-pagamento').value = despesaParaEditar.forma_pagamento;
-                document.getElementById('edit-despesa-valor').value = despesaParaEditar.valor;
+                document.getElementById('edit-despesa-valor').value = String(despesaParaEditar.valor).replace('.', ',');
+                document.getElementById('edit-despesa-km').value = despesaParaEditar.km || '';
                 document.getElementById('edit-despesa-status-pagamento').value = despesaParaEditar.status_pagamento;
                 document.getElementById('edit-despesa-link-comprovante').value = despesaParaEditar.link_comprovante || '';
                 document.getElementById('edit-despesa-descricao').value = despesaParaEditar.descricao || '';
+
+                const previewContainer = document.getElementById('edit-comprovante-preview-container');
+                if (despesaParaEditar.link_comprovante) {
+                
+                    const correctedPath = despesaParaEditar.link_comprovante.replace('/public', '');
+                    const fullUrl = `${API_URL}${correctedPath}`;
+
+                    document.getElementById('edit-comprovante-preview-img').src = fullUrl;
+                    document.getElementById('edit-comprovante-download-link').href = fullUrl;
+                    previewContainer.style.display = 'block';
+                } else {
+                    previewContainer.style.display = 'none';
+                }
+                
+                document.getElementById('edit-despesa-comprovante-file').value = '';
                 editDespesaModal.style.display = 'flex';
             }
         }
