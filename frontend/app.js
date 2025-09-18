@@ -444,41 +444,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cancelarEdicaoBtn.addEventListener('click', resetViagemForm);
 
-    preSalvarBtn.addEventListener('click', async () => {
-        const token = localStorage.getItem('token');
-        const viagemData = {
-            veiculo_id: viagemVeiculoSelect.value,
-            data_viagem: viagemDataInput.value,
-            km_inicial: viagemKmInicialInput.value,
-            descricao: viagemDescricaoInput.value,
-            isDraft: true
-        };
-
-        if (!viagemData.veiculo_id || !viagemData.data_viagem) {
-            messageArea.textContent = 'Selecione um veículo e uma data para pré-salvar.';
-            messageArea.className = 'message error';
-            return;
-        }
-
-        try {
-            const response = await fetch(`${API_URL}/api/viagens`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`},
-                body: JSON.stringify(viagemData)
-            });
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.message);
-
-            messageArea.textContent = 'Rascunho salvo com sucesso!';
-            messageArea.className = 'message success';
-            resetViagemForm();
-            fetchViagensRascunho();
-        } catch (error) {
-            messageArea.textContent = `Erro: ${error.message}`;
-            messageArea.className = 'message error';
-        }
-    });
-
     viagemForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const token = localStorage.getItem('token');
@@ -547,6 +512,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             viagensTotalPages = totalPages;
 
+            const viagensList = document.getElementById('viagens-list');
             viagensList.innerHTML = '';
             if (viagens.length === 0) {
                 viagensList.innerHTML = '<p>Nenhuma viagem encontrada para os filtros selecionados.</p>';
