@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 
+// Importação das rotas
 const authRoutes = require('./routes/authRoutes');
 const veiculoRoutes = require('./routes/veiculoRoutes');
 const viagemRoutes = require('./routes/viagemRoutes');
@@ -13,21 +14,26 @@ const pagamentoRoutes = require('./routes/pagamentoRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const relatorioRoutes = require('./routes/relatorioRoutes');
 
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// --- Configuração dos Middlewares ---
 
-const corsOptions = {
-  origin: 'https://www.auctusconsultoria.com.br'
-};
-app.use(cors(corsOptions));
+// 1. Configuração do CORS mais permissiva para lidar com "preflight requests"
+// Esta configuração aberta (sem options) é a mais compatível.
+app.use(cors()); 
 
+// Habilita o Express a lidar com requisições OPTIONS (importante para CORS com uploads)
+app.options('*', cors()); 
+
+// 2. Aumento do limite de tamanho para o corpo da requisição
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
+// 3. Servir arquivos estáticos da pasta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 
+// --- Rotas da Aplicação ---
 app.get('/', (req, res) => {
   res.send('API do Reembolso de Km - Telsign está no ar!');
 });
@@ -41,7 +47,8 @@ app.use('/api/pagamentos', pagamentoRoutes);
 app.use('/api/dashboard', dashboardRoutes); 
 app.use('/api/relatorios', relatorioRoutes);
 
-
+// --- Inicialização do Servidor ---
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
