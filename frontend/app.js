@@ -100,7 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelarEdicaoBtn = document.getElementById('cancelar-edicao-viagem-btn');
     const rascunhoListDiv = document.getElementById('rascunho-viagens-list');
 
-    const API_URL = 'https://api.auctusconsultoria.com.br';
+    // MUDANÇA PRINCIPAL AQUI: URL relativa para a API
+    const API_URL = ''; 
     const CONFIG = { appName: "Reembolso de Km" };
  
     let viagensCurrentPage = 1;
