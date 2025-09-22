@@ -19,12 +19,10 @@ const PORT = process.env.PORT || 3000;
 
 // --- Configuração dos Middlewares ---
 
-// 1. Configuração do CORS mais permissiva para lidar com "preflight requests"
-// Esta configuração aberta (sem options) é a mais compatível.
+// 1. Configuração do CORS. Esta linha já lida com as requisições OPTIONS.
 app.use(cors()); 
 
-// Habilita o Express a lidar com requisições OPTIONS (importante para CORS com uploads)
-app.options('*', cors()); 
+// A linha app.options('*', cors()); foi removida pois causava o crash.
 
 // 2. Aumento do limite de tamanho para o corpo da requisição
 app.use(express.json({ limit: '50mb' }));
@@ -51,4 +49,3 @@ app.use('/api/relatorios', relatorioRoutes);
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
-
