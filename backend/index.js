@@ -19,8 +19,14 @@ const PORT = process.env.PORT || 3000;
 
 // --- Configuração dos Middlewares ---
 
-// 1. Configuração do CORS. Esta é a forma correta e suficiente.
-app.use(cors()); 
+const corsOptions = {
+  origin: 'https://www.auctusconsultoria.com.br',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
+
 
 // 2. Aumento do limite de tamanho para o corpo da requisição
 app.use(express.json({ limit: '50mb' }));

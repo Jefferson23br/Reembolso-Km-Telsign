@@ -31,7 +31,7 @@ const upload = multer({
         checkFileType(file, cb);
     },
     // ADICIONADO: Limite para o tamanho do arquivo em bytes (25 MB)
-    limits: { fileSize: 25 * 1024 * 1024 } 
+    limits: { fileSize: 50 * 1024 * 1024 } 
 });
 
 router.post('/', protect, upload.single('comprovante'), (req, res) => {
