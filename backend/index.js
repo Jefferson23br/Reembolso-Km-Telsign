@@ -1,7 +1,7 @@
 require('dotenv').config(); 
 
 const express = require('express');
-const cors = require('cors');
+// const cors = require('cors'); // Linha comentada/removida
 const path = require('path');
 
 // Importação das rotas
@@ -18,13 +18,16 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // --- Configuração dos Middlewares ---
-// 1. Configuração do CORS (precisa estar no topo)
+
+// 1. Configuração do CORS (REMOVIDO - AGORA GERENCIADO PELO NGINX)
+/*
 const corsOptions = {
   origin: 'https://www.auctusconsultoria.com.br',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 };
 app.use(cors(corsOptions));
+*/
 
 // 2. Aumento do limite de tamanho para o corpo da requisição
 app.use(express.json({ limit: '50mb' }));
