@@ -30,7 +30,6 @@ const upload = multer({
     fileFilter: function (req, file, cb) {
         checkFileType(file, cb);
     },
-    // ADICIONADO: Limite para o tamanho do arquivo em bytes (25 MB)
     limits: { fileSize: 50 * 1024 * 1024 } 
 });
 
