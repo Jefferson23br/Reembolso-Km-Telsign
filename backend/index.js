@@ -19,10 +19,8 @@ const PORT = process.env.PORT || 3000;
 
 // --- Configuração dos Middlewares ---
 
-// 1. Configuração do CORS. Esta linha já lida com as requisições OPTIONS.
+// 1. Configuração do CORS. Esta é a forma correta e suficiente.
 app.use(cors()); 
-
-// A linha app.options('*', cors()); foi removida pois causava o crash.
 
 // 2. Aumento do limite de tamanho para o corpo da requisição
 app.use(express.json({ limit: '50mb' }));
