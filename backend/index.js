@@ -2,8 +2,8 @@ require('dotenv').config();
 
 const express = require('express');
 const path = require('path');
-const cors = require('cors'); // 1. Importar o pacote cors
 
+// --- Rotas da Aplicação ---
 const authRoutes = require('./routes/authRoutes');
 const veiculoRoutes = require('./routes/veiculoRoutes');
 const viagemRoutes = require('./routes/viagemRoutes');
@@ -13,18 +13,11 @@ const pagamentoRoutes = require('./routes/pagamentoRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const relatorioRoutes = require('./routes/relatorioRoutes');
 
+// --- Inicialização do Express ---
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const corsOptions = {
-  origin: [
-    'https://auctusconsultoria.com.br',
-    'https://www.auctusconsultoria.com.br'
-  ]
-};
-
-app.use(cors(corsOptions));
-
+// --- Middlewares Essenciais ---
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
