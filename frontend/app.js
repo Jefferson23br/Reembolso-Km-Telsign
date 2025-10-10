@@ -1,5 +1,3 @@
-// Substitua sua função initMap original por esta versão completa e corrigida
-
 function initMap() {
     // As opções de configuração permanecem as mesmas
     const options = {
