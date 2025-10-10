@@ -1,5 +1,4 @@
 function initMap() {
-    // As opções de configuração permanecem as mesmas
     const options = {
         componentRestrictions: { country: "br" },
         strictBounds: false,
