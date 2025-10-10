@@ -8,7 +8,6 @@ function initMap() {
         const saidaInput = document.getElementById("viagem-saida");
         const chegadaInput = document.getElementById("viagem-chegada");
 
-        // 1. Criamos e guardamos as instâncias do Autocomplete
         const autocompleteSaida = new google.maps.places.Autocomplete(saidaInput, options);
         const autocompleteChegada = new google.maps.places.Autocomplete(chegadaInput, options);
 
